@@ -1,0 +1,18 @@
+{
+  "name": "aws-study-platform-server",
+  "version": "1.0.0",
+  "description": "Back-end API for the AWS Solutions Architect study platform",
+  "main": "src/index.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  }
+}

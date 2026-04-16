@@ -1,0 +1,94 @@
+[
+  {
+    "id": "lesson1",
+    "title": "Design Secure Architectures",
+    "domain": "secure",
+    "objectives": [
+      "Understand IAM identities (users, groups, roles, policies) and apply least‑privilege access",
+      "Describe the AWS shared responsibility model and security best practices",
+      "Design secure VPC architectures with subnets, security groups and network ACLs",
+      "Use AWS services (KMS, ACM, Secrets Manager) to encrypt data at rest and in transit",
+      "Implement multi‑account strategies (AWS Organizations, Control Tower, SCPs) and cross‑account access"
+    ],
+    "description": "This lesson introduces the principles of designing secure AWS architectures.  You will learn how to create and manage identities using IAM, apply the principle of least privilege, and design authorization strategies across multiple accounts.  The lesson explains the AWS shared responsibility model and highlights services for secrets management and encryption.  You will also design secure VPC architectures using public and private subnets, security groups, network ACLs and NAT gateways.  Finally, the lesson covers encrypting data at rest with AWS KMS and in transit using certificates and TLS.",
+    "resources": [
+      {
+        "title": "AWS Solutions Architect – Associate Exam Guide (PDF)",
+        "url": "https://d1.awsstatic.com/training-and-certification/docs-sa-assoc/AWS-Certified-Solutions-Architect-Associate_Exam-Guide.pdf"
+      },
+      {
+        "title": "Blue Matador AWS CLI Cheat Sheet",
+        "url": "https://www.bluematador.com/learn/aws-cli-cheatsheet"
+      }
+    ],
+    "projectId": "project1",
+    "quizId": "quiz1",
+    "projectSummary": "Create an encrypted S3 bucket and design an IAM policy that grants read access to a specific role.  Enable MFA‑delete and configure a CloudFront distribution in front of your bucket."
+  },
+  {
+    "id": "lesson2",
+    "title": "Design Resilient Architectures",
+    "domain": "resilient",
+    "objectives": [
+      "Explain microservices vs. monolithic architectures and event‑driven design",
+      "Use managed services (API Gateway, SQS, SNS) to decouple components",
+      "Implement horizontal and vertical scaling strategies and auto‑scaling",
+      "Design high availability with multi‑AZ and multi‑Region architectures",
+      "Explain disaster recovery strategies (pilot light, warm standby, active‑active)"
+    ],
+    "description": "In this lesson you will learn how to design architectures that remain available and responsive under varying loads and failure scenarios.  Topics include microservices and serverless patterns, message queues, caching and CDN acceleration.  You will explore horizontal versus vertical scaling, auto‑scaling groups, load balancing and failover strategies.  The lesson also introduces disaster recovery approaches such as backup‑and‑restore, pilot light, warm standby and active‑active.  You will evaluate when to use containers (ECS/EKS) versus serverless (Lambda/Fargate) and how to integrate multiple AWS services to achieve loose coupling and resiliency.",
+    "resources": [
+      {
+        "title": "AWS Solutions Architect – Associate Exam Guide (PDF)",
+        "url": "https://d1.awsstatic.com/training-and-certification/docs-sa-assoc/AWS-Certified-Solutions-Architect-Associate_Exam-Guide.pdf"
+      }
+    ],
+    "projectId": "project2",
+    "quizId": "quiz2",
+    "projectSummary": "Build a serverless message processor using API Gateway, Lambda and SQS.  The API triggers a Lambda function that enqueues messages into SQS, and another Lambda processes them asynchronously.  Deploy across multiple availability zones and configure monitoring."
+  },
+  {
+    "id": "lesson3",
+    "title": "Design High‑Performing Architectures",
+    "domain": "high-performance",
+    "objectives": [
+      "Select the appropriate storage service (S3, EFS, EBS) based on performance needs",
+      "Choose compute options (EC2, Fargate, Lambda, Batch) for elasticity and performance",
+      "Design high‑performance database solutions (Aurora, DynamoDB, caching)",
+      "Create scalable network topologies and choose load‑balancing strategies",
+      "Use auto‑scaling and monitoring to meet performance objectives"
+    ],
+    "description": "This lesson focuses on selecting and configuring AWS services to achieve high performance and elasticity.  You will compare object, file and block storage types and identify when to use S3, EFS or EBS.  The lesson examines compute options including EC2 instance families, container orchestration on ECS/EKS, batch processing and serverless compute.  Database choices such as Amazon Aurora, DynamoDB and ElastiCache are discussed, along with read replicas and caching strategies.  You will also design network architectures using subnets, route tables, load balancers and edge services like CloudFront and Global Accelerator.",
+    "resources": [
+      {
+        "title": "AWS Solutions Architect – Associate Exam Guide (PDF)",
+        "url": "https://d1.awsstatic.com/training-and-certification/docs-sa-assoc/AWS-Certified-Solutions-Architect-Associate_Exam-Guide.pdf"
+      }
+    ],
+    "projectId": "project3",
+    "quizId": "quiz3",
+    "projectSummary": "Deploy a web application on EC2 behind an Application Load Balancer with an Auto‑Scaling Group.  Integrate an Aurora Serverless or DynamoDB database and add an ElastiCache layer to cache read‑heavy queries."
+  },
+  {
+    "id": "lesson4",
+    "title": "Design Cost‑Optimized Architectures",
+    "domain": "cost-optimization",
+    "objectives": [
+      "Use AWS cost‑management tools (Cost Explorer, Budgets, Cost and Usage Reports)",
+      "Select cost‑effective storage classes and lifecycle policies",
+      "Choose appropriate compute purchasing options (On‑Demand, Reserved, Savings Plans, Spot)",
+      "Design cost‑optimized database and network solutions",
+      "Implement tagging and multi‑account strategies for cost allocation"
+    ],
+    "description": "The final lesson covers designing architectures that meet business requirements while minimizing cost.  You will learn how to use AWS Cost Explorer, Budgets and cost allocation tags to monitor and control spending.  Storage topics include S3 storage classes, Intelligent‑Tiering, data lifecycle rules and hybrid storage options.  Compute topics cover pricing models such as On‑Demand, Spot Instances, Reserved Instances and Savings Plans.  The lesson also addresses cost‑effective database choices and network design, including NAT gateways versus instances, data transfer costs and content delivery strategies.",
+    "resources": [
+      {
+        "title": "AWS Solutions Architect – Associate Exam Guide (PDF)",
+        "url": "https://d1.awsstatic.com/training-and-certification/docs-sa-assoc/AWS-Certified-Solutions-Architect-Associate_Exam-Guide.pdf"
+      }
+    ],
+    "projectId": "project4",
+    "quizId": "quiz4",
+    "projectSummary": "Analyze a workload running on EC2 and S3, implement lifecycle rules to transition objects to infrequent access and Glacier, convert compute capacity to Savings Plans, and compare the cost of NAT instances versus NAT gateways.  Visualize cost impacts with Cost Explorer."
+  }
+]

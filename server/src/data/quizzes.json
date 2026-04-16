@@ -1,0 +1,170 @@
+[
+  {
+    "id": "quiz1",
+    "lessonId": "lesson1",
+    "questions": [
+      {
+        "id": "q1-1",
+        "question": "Which AWS service is primarily used to manage identities, permissions and access policies?",
+        "choices": [
+          "Amazon EC2",
+          "AWS Identity and Access Management (IAM)",
+          "AWS CloudTrail",
+          "Amazon VPC"
+        ],
+        "answer": [1],
+        "explanation": "IAM lets you create users, groups, roles and policies to control access to AWS resources."
+      },
+      {
+        "id": "q1-2",
+        "question": "In the AWS shared responsibility model, which of the following are customer responsibilities? (Choose two)",
+        "choices": [
+          "Configuring IAM policies correctly",
+          "Maintaining the physical security of data centers",
+          "Encrypting data stored on AWS",
+          "Operating the AWS network backbone"
+        ],
+        "answer": [0, 2],
+        "explanation": "Customers are responsible for security \"in\" the cloud, including configuring IAM and encrypting their data. AWS manages physical security and the underlying network infrastructure."
+      },
+      {
+        "id": "q1-3",
+        "question": "Which feature can be used to control inbound and outbound traffic at the subnet level?",
+        "choices": [
+          "Security groups",
+          "Network ACLs",
+          "IAM roles",
+          "AWS Key Management Service (KMS)"
+        ],
+        "answer": [1],
+        "explanation": "Network ACLs operate at the subnet level and can allow or deny specific IP ranges and protocols. Security groups act at the instance level."
+      }
+    ]
+  },
+  {
+    "id": "quiz2",
+    "lessonId": "lesson2",
+    "questions": [
+      {
+        "id": "q2-1",
+        "question": "Which AWS service is commonly used to decouple components in a microservices or serverless architecture?",
+        "choices": [
+          "Amazon Simple Queue Service (SQS)",
+          "Amazon Simple Storage Service (S3)",
+          "Amazon DynamoDB",
+          "AWS CloudTrail"
+        ],
+        "answer": [0],
+        "explanation": "SQS is a fully managed message queuing service that enables you to decouple and scale microservices, distributed systems and serverless applications."
+      },
+      {
+        "id": "q2-2",
+        "question": "Which scaling strategy adds additional instances of a resource rather than increasing the size of an instance?",
+        "choices": [
+          "Vertical scaling",
+          "Horizontal scaling",
+          "Single scaling",
+          "Elastic scaling"
+        ],
+        "answer": [1],
+        "explanation": "Horizontal scaling (scaling out) means adding more instances to distribute load, while vertical scaling (scaling up) increases the size of a single instance."
+      },
+      {
+        "id": "q2-3",
+        "question": "Which disaster recovery strategy maintains a scaled‑down version of the production environment that can be quickly scaled up when needed?",
+        "choices": [
+          "Backup and restore",
+          "Pilot light",
+          "Warm standby",
+          "Multi‑site active‑active"
+        ],
+        "answer": [2],
+        "explanation": "In the warm standby strategy a scaled‑down version of the environment is always running and can be scaled up to production load on demand."
+      }
+    ]
+  },
+  {
+    "id": "quiz3",
+    "lessonId": "lesson3",
+    "questions": [
+      {
+        "id": "q3-1",
+        "question": "Which AWS storage service provides highly scalable object storage with 11 nines (99.999999999%) durability?",
+        "choices": [
+          "Amazon Elastic File System (EFS)",
+          "Amazon Elastic Block Store (EBS)",
+          "Amazon Simple Storage Service (S3)",
+          "Amazon S3 Glacier"
+        ],
+        "answer": [2],
+        "explanation": "Amazon S3 offers 11 nines of durability by automatically storing objects across multiple devices and facilities."
+      },
+      {
+        "id": "q3-2",
+        "question": "For unpredictable and spiky workloads with variable request rates, which compute service offers automatic scaling without provisioning or managing servers?",
+        "choices": [
+          "Amazon EC2 Auto Scaling",
+          "AWS Lambda",
+          "Amazon Lightsail",
+          "AWS Batch"
+        ],
+        "answer": [1],
+        "explanation": "AWS Lambda lets you run code without provisioning or managing servers and automatically scales based on the number of incoming requests."
+      },
+      {
+        "id": "q3-3",
+        "question": "Which AWS database service is fully managed, serverless and designed to handle key‑value and document data at any scale?",
+        "choices": [
+          "Amazon RDS for MySQL",
+          "Amazon Aurora",
+          "Amazon DynamoDB",
+          "Amazon Redshift"
+        ],
+        "answer": [2],
+        "explanation": "Amazon DynamoDB is a fully managed NoSQL database that provides single‑digit millisecond latency at any scale and supports both key‑value and document data models."
+      }
+    ]
+  },
+  {
+    "id": "quiz4",
+    "lessonId": "lesson4",
+    "questions": [
+      {
+        "id": "q4-1",
+        "question": "Which pricing model allows you to purchase compute capacity for a one‑ or three‑year term in exchange for a discounted hourly rate?",
+        "choices": [
+          "Reserved Instances",
+          "Spot Instances",
+          "Savings Plans",
+          "On‑Demand Instances"
+        ],
+        "answer": [0],
+        "explanation": "Reserved Instances provide a significant discount compared with On‑Demand pricing when you commit to a one‑ or three‑year term."
+      },
+      {
+        "id": "q4-2",
+        "question": "To minimize costs for data that is rarely accessed and does not require immediate retrieval, which Amazon S3 storage class is most appropriate?",
+        "choices": [
+          "S3 Standard",
+          "S3 Intelligent‑Tiering",
+          "S3 Glacier Deep Archive",
+          "S3 One Zone‑IA"
+        ],
+        "answer": [2],
+        "explanation": "S3 Glacier Deep Archive is designed for long‑term archival of infrequently accessed data at the lowest cost, but retrieval times are typically measured in hours."
+      },
+      {
+        "id": "q4-3",
+        "question": "Which AWS tool can help you visualize and analyze your spending patterns over time?",
+        "choices": [
+          "AWS CloudFormation",
+          "AWS Budgets",
+          "AWS Cost Explorer",
+          "AWS Trusted Advisor"
+        ],
+        "answer": [2],
+        "explanation": "AWS Cost Explorer provides interactive dashboards and reports that help you understand and forecast your AWS costs."
+      }
+    ]
+  }
+]

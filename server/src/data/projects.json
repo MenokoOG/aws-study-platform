@@ -1,0 +1,66 @@
+[
+  {
+    "id": "project1",
+    "lessonId": "lesson1",
+    "title": "Secure S3 and IAM",
+    "introduction": "In this project you will practice securing an Amazon S3 bucket and implementing IAM policies.  You will enable encryption, configure access policies and integrate CloudFront.",
+    "steps": [
+      "Sign in to the AWS Management Console and create a new S3 bucket (e.g., my-secure-bucket).  Choose a unique name and your preferred region.",
+      "Enable default encryption for the bucket using AWS KMS with an AWS‑managed key.",
+      "Create an IAM role named `S3ReadOnlyRole` and attach the AWS‑managed policy `AmazonS3ReadOnlyAccess`.  Create a trust policy that allows an application (e.g., EC2) in your account to assume the role.",
+      "Write a bucket policy that grants the `S3ReadOnlyRole` read access (GetObject) to all objects in the bucket.  Deny public access.",
+      "Enable versioning and MFA‑delete on the bucket (if supported in your region).  Configure a lifecycle rule to move objects to the S3 Infrequent Access tier after 30 days.",
+      "Create a CloudFront distribution that points to your S3 bucket as the origin.  Restrict bucket access using an origin access identity (OAI).  Test access via the CloudFront URL.",
+      "Finally, rotate the KMS key used for encryption to practise key management.  Clean up resources when finished to avoid charges."
+    ],
+    "expectedOutcome": "You will have a private, encrypted S3 bucket accessible only through a specific IAM role and a CloudFront distribution.  You will understand how IAM policies, bucket policies, encryption and CDN integration work together to secure content."
+  },
+  {
+    "id": "project2",
+    "lessonId": "lesson2",
+    "title": "Serverless Message Processor",
+    "introduction": "This project demonstrates how to decouple application components using serverless services.  You will build an API that queues messages and a worker function that processes them asynchronously.",
+    "steps": [
+      "Create an Amazon SQS queue named `MessageQueue`.  Leave the default visibility timeout or adjust as needed.",
+      "Write an AWS Lambda function (`enqueueMessage`) in your preferred runtime that reads a JSON payload from the request and sends it to the SQS queue using the AWS SDK.",
+      "Create an Amazon API Gateway REST API with an endpoint (POST /messages) that triggers the `enqueueMessage` Lambda function.  Enable request validation to ensure only well‑formed messages are accepted.",
+      "Write a second Lambda function (`processMessage`) that is triggered by messages arriving in the SQS queue.  The function can log the message body or perform a simple transformation (e.g., uppercase the text).  Configure the function’s concurrency and batch size for efficient processing.",
+      "Deploy both functions across at least two Availability Zones (use a Lambda function with VPC configuration if needed).  Add CloudWatch alarms for message backlog and Lambda errors.",
+      "Test the solution by sending several POST requests to the API endpoint.  Monitor the SQS queue length and Lambda invocation metrics.  Adjust auto‑scaling parameters if necessary.",
+      "Finally, clean up by deleting the API, functions and queue."
+    ],
+    "expectedOutcome": "You will build a resilient, serverless microservice that uses API Gateway, Lambda and SQS to decouple producers and consumers.  You will understand how scaling and high availability are achieved through managed services."
+  },
+  {
+    "id": "project3",
+    "lessonId": "lesson3",
+    "title": "Auto‑scaling Web Application",
+    "introduction": "In this project you will deploy a simple web application on Amazon EC2 with an Auto‑Scaling Group (ASG) behind an Application Load Balancer (ALB).  You will integrate a database and a caching layer to improve performance.",
+    "steps": [
+      "Create a launch template or configuration that defines your EC2 instance (AMI ID, instance type, security groups, user data to install the web application).",
+      "Create an Auto‑Scaling Group using the launch template and specify a minimum, maximum and desired capacity (e.g., min = 2, desired = 2, max = 5).  Distribute instances across two Availability Zones.",
+      "Configure an Application Load Balancer and target group.  Attach your ASG to the target group.  Set up a listener on port 80 (or 443 with an ACM certificate).",
+      "Deploy a database: choose Amazon Aurora Serverless v2 or DynamoDB depending on whether you need relational or NoSQL features.  Create necessary tables or schemas.",
+      "Set up Amazon ElastiCache (Redis or Memcached) and integrate it into your application to cache frequent read queries.  Use environment variables to store connection endpoints.",
+      "Configure CloudWatch alarms and scaling policies on the ASG to scale based on CPU utilization or request count per target.  Test scaling by generating load using a tool such as `ab` or `hey`.",
+      "Verify that new instances register with the ALB and that your application continues to perform under load.  Clean up the resources when finished."
+    ],
+    "expectedOutcome": "You will deploy a fault‑tolerant web application that automatically scales based on demand.  You will gain experience with EC2, load balancing, auto‑scaling, databases and caching services."
+  },
+  {
+    "id": "project4",
+    "lessonId": "lesson4",
+    "title": "Cost Optimization Challenge",
+    "introduction": "This project focuses on applying cost‑optimization strategies to an existing workload.  You will analyze spending, implement lifecycle policies and evaluate pricing models.",
+    "steps": [
+      "Use AWS Cost Explorer to review the current monthly cost of your EC2 instances and S3 buckets.  Identify the most expensive resources.",
+      "For EC2, determine whether Reserved Instances or Savings Plans could reduce costs.  Use the recommendations from Cost Explorer to estimate potential savings.  Purchase a Savings Plan or convert to Reserved Instances in your AWS account if appropriate (on a test account).",
+      "Examine your S3 buckets and enable S3 Intelligent‑Tiering or create lifecycle policies to transition objects to S3 Glacier or Glacier Deep Archive after a certain number of days.  Monitor cost changes over the next few days.",
+      "Evaluate the cost of a NAT instance versus a NAT Gateway in your VPC.  Launch a small NAT instance and compare its hourly cost with that of a NAT Gateway.  Decide which option is more cost‑effective for your traffic pattern.",
+      "If your workload uses RDS, assess whether switching to Aurora Serverless or DynamoDB would lower costs.  Run performance tests to validate your choice.",
+      "Finally, create tags on your resources (e.g., cost center, environment) and enable cost allocation tags in the Billing console.  Use AWS Budgets to set budget thresholds and notifications.",
+      "Clean up any experimental resources created for this project to avoid ongoing charges."
+    ],
+    "expectedOutcome": "You will learn how to analyze AWS spending, apply pricing models, configure lifecycle policies and make architectural decisions that minimize costs while meeting requirements.  You will also practice tagging and budgeting to maintain cost visibility."
+  }
+]
