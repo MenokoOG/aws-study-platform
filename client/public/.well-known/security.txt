@@ -1,0 +1,4 @@
+Contact: https://github.com/MenokoOG/aws-study-platform/security/advisories
+Policy: https://github.com/MenokoOG/aws-study-platform/blob/main/SECURITY.md
+Preferred-Languages: en
+Expires: 2027-04-17T00:00:00.000Z

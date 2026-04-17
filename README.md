@@ -11,6 +11,15 @@ This repository now contains a mobile-first flashcard mastery companion for the 
 - Optional AI tutor endpoint powered by OpenAI for supportive concept coaching.
 - Existing lesson/project/quiz endpoints are still available for compatibility.
 
+## Repository Policies
+
+- License: `MIT` (see `LICENSE`)
+- Security reporting policy: see `SECURITY.md`
+- Web crawler policy: `client/public/robots.txt`
+- Security disclosure endpoint for deployed site:
+  - `client/public/security.txt`
+  - `client/public/.well-known/security.txt`
+
 ## Getting started
 
 > **Note:** The code files in this repository are provided as a starting point. You must install the dependencies and run the application on your own machine. Ensure you have [Node.js](https://nodejs.org/) and [npm](https://www.npmjs.com/) installed.
@@ -98,7 +107,7 @@ Progress and note memory is persisted to `server/src/data/progress-memory.json`.
 
 ## Agent Documentation
 
-The `AGENTS.MD` file describes the study assistant agent behavior, skills, memory and safety rules. Additional documents in `agent_docs/` provide detailed specifications for skills, memory management and logging policies.
+The `AGENTS.md` file describes the study assistant agent behavior, skills, memory and safety rules. Additional documents in `agent_docs/` provide detailed specifications for skills, memory management and logging policies.
 
 ## Contributing And Extending
 
