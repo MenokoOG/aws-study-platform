@@ -1,0 +1,40 @@
+{
+  "users": {
+    "learner-4zvaqxb5": {
+      "lessons": {},
+      "notes": [
+        {
+          "cardId": null,
+          "lessonId": null,
+          "text": "it is still got bugs for this app",
+          "timestamp": "2026-04-17T07:52:42.486Z"
+        }
+      ],
+      "history": [
+        {
+          "timestamp": "2026-04-17T07:52:42.486Z",
+          "action": "recordNote",
+          "input": {
+            "cardId": null
+          },
+          "output": {
+            "success": true
+          }
+        }
+      ],
+      "cards": {}
+    },
+    "local-user": {
+      "lessons": {},
+      "notes": [],
+      "history": [],
+      "cards": {}
+    },
+    "test-reset-user": {
+      "lessons": {},
+      "notes": [],
+      "history": [],
+      "cards": {}
+    }
+  }
+}

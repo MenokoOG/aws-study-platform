@@ -15,8 +15,19 @@ function App() {
   const [userId] = useState(getUserId);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [subjects, setSubjects] = useState([]);
+  const [subjectId, setSubjectId] = useState("all");
+  const [queues, setQueues] = useState([]);
+  const [queueId, setQueueId] = useState("all-due");
   const [stats, setStats] = useState(null);
-  const [card, setCard] = useState(null);
+  const [progressSummary, setProgressSummary] = useState({
+    recentAnswers: [],
+    trend: [],
+    topStrugglingSubject: null,
+  });
+  const [isHistoryCollapsed, setIsHistoryCollapsed] = useState(true);
+  const [resetStatus, setResetStatus] = useState("");
+  const [historyState, setHistoryState] = useState({ cards: [], index: -1 });
   const [selectedChoice, setSelectedChoice] = useState(null);
   const [feedback, setFeedback] = useState(null);
   const [noteText, setNoteText] = useState("");
@@ -26,17 +37,69 @@ function App() {
 
   const headers = useMemo(() => ({ "x-user-id": userId }), [userId]);
 
-  const loadSession = async () => {
+  const card =
+    historyState.index >= 0 ? historyState.cards[historyState.index] : null;
+
+  const clearTransientState = () => {
+    setSelectedChoice(null);
+    setFeedback(null);
+    setTutorReply("");
+    setNoteStatus("");
+  };
+
+  const resetHistory = (nextCard) => {
+    setHistoryState({
+      cards: nextCard ? [nextCard] : [],
+      index: nextCard ? 0 : -1,
+    });
+  };
+
+  const appendToHistory = (nextCard) => {
+    if (!nextCard) return;
+    setHistoryState((prev) => {
+      const clipped = prev.cards.slice(0, prev.index + 1);
+      if (
+        clipped.length > 0 &&
+        clipped[clipped.length - 1].id === nextCard.id
+      ) {
+        return {
+          cards: clipped,
+          index: clipped.length - 1,
+        };
+      }
+
+      const cards = [...clipped, nextCard];
+      return {
+        cards,
+        index: cards.length - 1,
+      };
+    });
+  };
+
+  const loadSession = async (
+    nextSubject = subjectId,
+    nextQueue = queueId,
+    reset = true,
+  ) => {
     setLoading(true);
     setError("");
     try {
-      const response = await axios.get("/api/study/session", { headers });
+      const response = await axios.get("/api/study/session", {
+        headers,
+        params: { subject: nextSubject, queue: nextQueue },
+      });
+      setSubjectId(response.data.activeSubject || nextSubject);
+      setQueueId(response.data.activeQueue || nextQueue);
+      setSubjects(response.data.subjects || []);
+      setQueues(response.data.queues || []);
       setStats(response.data.stats);
-      setCard(response.data.card);
-      setSelectedChoice(null);
-      setFeedback(null);
-      setTutorReply("");
-      setNoteStatus("");
+      await loadProgressSummary(response.data.activeSubject || nextSubject);
+      if (reset) {
+        resetHistory(response.data.card || null);
+      } else {
+        appendToHistory(response.data.card || null);
+      }
+      clearTransientState();
     } catch (requestError) {
       setError(
         "Could not load your study session. Check that the server is running.",
@@ -47,8 +110,26 @@ function App() {
   };
 
   useEffect(() => {
-    loadSession();
+    loadSession("all", "all-due", true);
   }, []);
+
+  const loadProgressSummary = async (nextSubject = subjectId) => {
+    try {
+      const response = await axios.get("/api/progress", {
+        headers,
+        params: { subject: nextSubject },
+      });
+      setProgressSummary(
+        response.data.summary || {
+          recentAnswers: [],
+          trend: [],
+          topStrugglingSubject: null,
+        },
+      );
+    } catch (requestError) {
+      // Keep current summary if progress endpoint is temporarily unavailable.
+    }
+  };
 
   const submitAnswer = async () => {
     if (!card || selectedChoice === null) return;
@@ -61,11 +142,14 @@ function App() {
         {
           cardId: card.id,
           choiceIndex: selectedChoice,
+          subject: subjectId,
+          queue: queueId,
         },
         { headers },
       );
 
       setFeedback({
+        question: card.prompt,
         correct: response.data.correct,
         expectedAnswer: response.data.expectedAnswer,
         selectedAnswer,
@@ -74,8 +158,15 @@ function App() {
         mastered: response.data.mastered,
         streak: response.data.streak,
       });
+      setSubjectId(response.data.activeSubject || subjectId);
+      setQueueId(response.data.activeQueue || queueId);
+      setSubjects(response.data.subjects || subjects);
+      setQueues(response.data.queues || queues);
       setStats(response.data.stats);
-      setCard(response.data.card);
+      await loadProgressSummary(response.data.activeSubject || subjectId);
+      if (response.data.correct) {
+        appendToHistory(response.data.card || null);
+      }
       setSelectedChoice(null);
       setTutorReply("");
     } catch (requestError) {
@@ -115,7 +206,7 @@ function App() {
       const response = await axios.post(
         "/api/tutor",
         {
-          question: card?.prompt || "Help explain this AWS concept.",
+          question: feedback?.question || "Help explain this AWS concept.",
           selectedAnswer: feedback.selectedAnswer,
           correctAnswer: feedback.expectedAnswer,
           reference: feedback.reference,
@@ -132,6 +223,70 @@ function App() {
     } finally {
       setTutorLoading(false);
     }
+  };
+
+  const handleSubjectChange = async (event) => {
+    const nextSubject = event.target.value;
+    setSubjectId(nextSubject);
+    await loadSession(nextSubject, queueId, true);
+  };
+
+  const handleQueueChange = async (event) => {
+    const nextQueue = event.target.value;
+    setQueueId(nextQueue);
+    await loadSession(subjectId, nextQueue, true);
+  };
+
+  const resetTracking = async (scope = "subject") => {
+    const subjectLabel =
+      subjects.find((subject) => subject.id === subjectId)?.label ||
+      "current subject";
+
+    const targetLabel = scope === "all" ? "ALL subjects" : subjectLabel;
+    const targetValue = scope === "all" ? "all" : subjectId;
+
+    const confirmed = window.confirm(
+      `Reset tracking for ${targetLabel}? This clears right/wrong stats and streaks for this scope.`,
+    );
+    if (!confirmed) return;
+
+    setResetStatus("Resetting...");
+    try {
+      await axios.post(
+        "/api/progress/reset",
+        { subject: targetValue },
+        { headers },
+      );
+      setResetStatus(
+        scope === "all"
+          ? "All tracking reset."
+          : `Tracking reset for ${subjectLabel}.`,
+      );
+      await loadSession(scope === "all" ? "all" : subjectId, queueId, true);
+    } catch (requestError) {
+      setResetStatus("Reset failed.");
+    }
+  };
+
+  const goToPreviousCard = () => {
+    setHistoryState((prev) => ({
+      ...prev,
+      index: Math.max(prev.index - 1, 0),
+    }));
+    clearTransientState();
+  };
+
+  const goToNextCard = async () => {
+    if (historyState.index < historyState.cards.length - 1) {
+      setHistoryState((prev) => ({
+        ...prev,
+        index: prev.index + 1,
+      }));
+      clearTransientState();
+      return;
+    }
+
+    await loadSession(subjectId, queueId, false);
   };
 
   const masteryPercent = stats?.masteryPercent || 0;
@@ -157,14 +312,207 @@ function App() {
             calm, repeatable progress.
           </p>
 
+          <div className="mt-4 grid gap-3 sm:grid-cols-[1fr_1fr_auto] sm:items-end">
+            <label className="block text-xs font-semibold uppercase tracking-[0.18em] text-slate-600">
+              Subject Area
+              <select
+                className="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-800 outline-none ring-orange-300 focus:ring"
+                value={subjectId}
+                onChange={handleSubjectChange}
+              >
+                {(subjects.length > 0
+                  ? subjects
+                  : [
+                      {
+                        id: "all",
+                        label: "All Subjects",
+                        remainingCards: 0,
+                        totalCards: 0,
+                      },
+                    ]
+                ).map((subject) => (
+                  <option key={subject.id} value={subject.id}>
+                    {subject.label} ({subject.remainingCards}/
+                    {subject.totalCards} left)
+                  </option>
+                ))}
+              </select>
+            </label>
+
+            <label className="block text-xs font-semibold uppercase tracking-[0.18em] text-slate-600">
+              Card Queue
+              <select
+                className="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-800 outline-none ring-orange-300 focus:ring"
+                value={queueId}
+                onChange={handleQueueChange}
+              >
+                {(queues.length > 0
+                  ? queues
+                  : [
+                      {
+                        id: "all-due",
+                        label: "All Due",
+                        count: 0,
+                      },
+                    ]
+                ).map((queue) => (
+                  <option key={queue.id} value={queue.id}>
+                    {queue.label} ({queue.count})
+                  </option>
+                ))}
+              </select>
+            </label>
+
+            <div className="flex items-center gap-2">
+              <button
+                className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-700 transition hover:bg-slate-50 disabled:opacity-40"
+                disabled={historyState.index <= 0}
+                onClick={goToPreviousCard}
+              >
+                Back
+              </button>
+              <button
+                className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-700 transition hover:bg-slate-50 disabled:opacity-40"
+                disabled={!card}
+                onClick={goToNextCard}
+              >
+                Forward
+              </button>
+              <button
+                className="rounded-xl border border-amber-300 bg-amber-50 px-3 py-2 text-xs font-semibold text-amber-700 transition hover:bg-amber-100"
+                onClick={() => resetTracking("subject")}
+              >
+                Reset Subject
+              </button>
+              <button
+                className="rounded-xl border border-rose-300 bg-rose-50 px-3 py-2 text-xs font-semibold text-rose-700 transition hover:bg-rose-100"
+                onClick={() => resetTracking("all")}
+              >
+                Reset Everything
+              </button>
+            </div>
+          </div>
+
+          {resetStatus && (
+            <p className="mt-2 text-xs font-medium text-rose-700">
+              {resetStatus}
+            </p>
+          )}
+
           {stats && (
             <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
               <StatChip label="Mastered" value={`${stats.masteredCards}`} />
               <StatChip label="Remaining" value={`${stats.remainingCards}`} />
-              <StatChip label="Needs review" value={`${stats.needsReview}`} />
+              <StatChip
+                label="Review Queue"
+                value={`${stats.reviewQueueCards ?? stats.needsReview ?? 0}`}
+              />
               <StatChip label="Progress" value={`${masteryPercent}%`} accent />
             </div>
           )}
+
+          {stats && (
+            <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">
+              <StatChip
+                label="Correct"
+                value={`${stats.correctAttempts ?? 0}`}
+              />
+              <StatChip
+                label="Incorrect"
+                value={`${stats.incorrectAttempts ?? 0}`}
+              />
+              <StatChip
+                label="Attempts"
+                value={`${stats.totalAttempts ?? 0}`}
+              />
+              <StatChip
+                label="Accuracy"
+                value={`${stats.accuracyPercent ?? 0}%`}
+              />
+            </div>
+          )}
+
+          <div className="mt-4 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-600">
+              Session Summary
+            </p>
+
+            <div className="mt-3 grid gap-3 sm:grid-cols-3">
+              <div className="rounded-xl border border-slate-200 bg-white p-3">
+                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
+                  Most Missed Subject
+                </p>
+                <p className="mt-2 text-sm font-semibold text-slate-800">
+                  {progressSummary.topStrugglingSubject
+                    ? `${progressSummary.topStrugglingSubject.label} (${progressSummary.topStrugglingSubject.mistakes})`
+                    : "No misses yet"}
+                </p>
+              </div>
+
+              <div className="rounded-xl border border-slate-200 bg-white p-3 sm:col-span-2">
+                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
+                  Last 10 Trend
+                </p>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {(progressSummary.trend || []).length > 0 ? (
+                    progressSummary.trend.map((item, idx) => (
+                      <span
+                        key={`${item}-${idx}`}
+                        className={`rounded-full px-2 py-1 text-xs font-semibold ${
+                          item === "correct"
+                            ? "bg-emerald-100 text-emerald-700"
+                            : "bg-rose-100 text-rose-700"
+                        }`}
+                      >
+                        {item === "correct" ? "R" : "W"}
+                      </span>
+                    ))
+                  ) : (
+                    <span className="text-xs text-slate-500">
+                      No attempts yet
+                    </span>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-3 rounded-xl border border-slate-200 bg-white p-3">
+              <div className="flex items-center justify-between gap-3">
+                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
+                  Last 10 Answers
+                </p>
+                <button
+                  className="rounded-lg border border-slate-300 bg-white px-2 py-1 text-[11px] font-semibold text-slate-700 transition hover:bg-slate-50"
+                  onClick={() => setIsHistoryCollapsed((prev) => !prev)}
+                >
+                  {isHistoryCollapsed ? "Show" : "Hide"}
+                </button>
+              </div>
+
+              {!isHistoryCollapsed && (
+                <div className="mt-2 space-y-2">
+                  {(progressSummary.recentAnswers || []).length > 0 ? (
+                    progressSummary.recentAnswers.map((entry, idx) => (
+                      <div
+                        key={`${entry.cardId}-${entry.timestamp}-${idx}`}
+                        className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2"
+                      >
+                        <p className="text-xs font-medium text-slate-600">
+                          {entry.subjectLabel} •{" "}
+                          {entry.correct ? "Right" : "Wrong"}
+                        </p>
+                        <p className="mt-1 line-clamp-2 text-sm text-slate-800">
+                          {entry.prompt}
+                        </p>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-xs text-slate-500">No answers yet</p>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
         </header>
 
         <section className="mt-5 animate-floatIn rounded-3xl border border-amber-200/80 bg-white/90 p-4 shadow-lg backdrop-blur sm:p-6">
@@ -207,6 +555,11 @@ function App() {
               <p className="text-xs font-semibold uppercase tracking-[0.2em] text-amber-700">
                 {card.topic}
               </p>
+              {card.subjectLabel && (
+                <p className="mt-1 text-xs font-medium text-slate-500">
+                  Subject: {card.subjectLabel}
+                </p>
+              )}
               <h2 className="mt-2 font-display text-2xl leading-tight text-slate-900">
                 {card.prompt}
               </h2>

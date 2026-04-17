@@ -13,7 +13,7 @@ This repository now contains a mobile-first flashcard mastery companion for the 
 
 ## Getting started
 
-> **Note:** The code files in this repository are provided as a starting point.  You must install the dependencies and run the application on your own machine.  Ensure you have [Node.js](https://nodejs.org/) and [npm](https://www.npmjs.com/) installed.
+> **Note:** The code files in this repository are provided as a starting point. You must install the dependencies and run the application on your own machine. Ensure you have [Node.js](https://nodejs.org/) and [npm](https://www.npmjs.com/) installed.
 
 ### Set up the back-end
 
@@ -29,11 +29,17 @@ This repository now contains a mobile-first flashcard mastery companion for the 
    npm install
    ```
 
-3. (Optional) Configure AI tutor support:
+3. Configure AI tutor support in `server/.env`:
 
    ```sh
-   export OPENAI_API_KEY="your_openai_api_key"
-   export OPENAI_MODEL="gpt-4.1-mini"
+   cp .env.example .env
+   ```
+
+   Then open `server/.env` and set your key:
+
+   ```sh
+   OPENAI_API_KEY="your_openai_api_key"
+   OPENAI_MODEL="gpt-4.1-mini"
    ```
 
 4. Start the server (by default on port 3000):
@@ -64,7 +70,7 @@ This repository now contains a mobile-first flashcard mastery companion for the 
    npm run dev
    ```
 
-   By default, the front end runs on port 5173.  The Vite configuration proxies `/api` requests to the back‑end server.
+   By default, the front end runs on port 5173. The Vite configuration proxies `/api` requests to the back‑end server.
 
 4. Open your browser to `http://localhost:5173`.
 
@@ -79,7 +85,7 @@ cd client
 npm run build
 ```
 
-The build output will be placed in `client/dist`.  You can configure your back‑end server (e.g., Express or a static file server) to serve the static assets.
+The build output will be placed in `client/dist`. You can configure your back‑end server (e.g., Express or a static file server) to serve the static assets.
 
 ## Study Data Flow
 
@@ -103,4 +109,4 @@ This project is intentionally lightweight and easy to extend. Possible enhanceme
 - Adding PDF extraction pipelines to generate cards from slide content.
 - Expanding AI tutor to include source citations and follow-up drills.
 
-Contributions are welcome!  Feel free to fork the repository and adapt it to your learning needs.
+Contributions are welcome! Feel free to fork the repository and adapt it to your learning needs.

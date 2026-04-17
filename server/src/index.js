@@ -3,6 +3,9 @@ const cors = require("cors");
 const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
+require("dotenv").config({
+  path: path.join(__dirname, "..", ".env"),
+});
 
 // Load data from JSON files.  In production you might use a database.
 const lessons = require("./data/lessons.json");
@@ -153,6 +156,188 @@ function createCard(base, prompt, expectedAnswer, reference, type) {
   };
 }
 
+function humanizeSlug(slug) {
+  return slug
+    .replace(/^aws-saa-c03-certified-solutions-architect-associate-/, "")
+    .replace(/-/g, " ")
+    .trim();
+}
+
+function getCardSubject(card) {
+  if (card.type === "quiz-anchor") {
+    return {
+      id: "exam-critical",
+      label: "Exam Critical",
+    };
+  }
+
+  const marker = "server/src/data/aws-lessons/";
+  if (typeof card.sourcePath === "string" && card.sourcePath.includes(marker)) {
+    const rest = card.sourcePath.slice(
+      card.sourcePath.indexOf(marker) + marker.length,
+    );
+    const segment = rest.split("/")[0] || "general";
+    return {
+      id: segment,
+      label: humanizeSlug(segment)
+        .split(" ")
+        .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+        .join(" "),
+    };
+  }
+
+  const fallback = (card.topic || "general").toLowerCase().replace(/\s+/g, "-");
+  return {
+    id: fallback,
+    label: card.topic || "General",
+  };
+}
+
+function filterCardsBySubject(cards, subjectId) {
+  if (!subjectId || subjectId === "all") return cards;
+  return cards.filter((card) => card.subjectId === subjectId);
+}
+
+function filterCardsByQueue(cards, userState, queueId) {
+  if (!queueId || queueId === "all-due") {
+    return cards.filter((card) => {
+      const progress = userState.cards[card.id];
+      return !progress || (progress.streak || 0) < PASSING_STREAK;
+    });
+  }
+
+  if (queueId === "review") {
+    return cards.filter((card) => {
+      const progress = userState.cards[card.id];
+      return (
+        !!progress &&
+        progress.attempts > 0 &&
+        (progress.streak || 0) < PASSING_STREAK
+      );
+    });
+  }
+
+  if (queueId === "new") {
+    return cards.filter((card) => {
+      const progress = userState.cards[card.id];
+      return !progress || progress.attempts === 0;
+    });
+  }
+
+  if (queueId === "mastered") {
+    return cards.filter((card) => {
+      const progress = userState.cards[card.id];
+      return !!progress && (progress.streak || 0) >= PASSING_STREAK;
+    });
+  }
+
+  return cards;
+}
+
+function buildQueueSummary(cards, userState) {
+  const allDue = filterCardsByQueue(cards, userState, "all-due").length;
+  const review = filterCardsByQueue(cards, userState, "review").length;
+  const fresh = filterCardsByQueue(cards, userState, "new").length;
+  const mastered = filterCardsByQueue(cards, userState, "mastered").length;
+
+  return [
+    { id: "all-due", label: "All Due", count: allDue },
+    { id: "review", label: "Review Queue", count: review },
+    { id: "new", label: "New Cards", count: fresh },
+    { id: "mastered", label: "Mastered", count: mastered },
+  ];
+}
+
+function getAttemptMetrics(cards, userState) {
+  const cardIds = new Set(cards.map((card) => card.id));
+  const attemptedCardIds = new Set();
+  let correctAttempts = 0;
+  let incorrectAttempts = 0;
+
+  (userState.history || []).forEach((entry) => {
+    if (entry.action !== "submitStudyAnswer") return;
+    const cardId = entry?.input?.cardId;
+    if (!cardId || !cardIds.has(cardId)) return;
+
+    attemptedCardIds.add(cardId);
+    if (entry?.output?.correct === true) {
+      correctAttempts += 1;
+      return;
+    }
+    if (entry?.output?.correct === false) {
+      incorrectAttempts += 1;
+    }
+  });
+
+  const totalAttempts = correctAttempts + incorrectAttempts;
+
+  return {
+    attemptedCards: attemptedCardIds.size,
+    totalAttempts,
+    correctAttempts,
+    incorrectAttempts,
+    accuracyPercent:
+      totalAttempts > 0
+        ? Math.round((correctAttempts / totalAttempts) * 100)
+        : 0,
+  };
+}
+
+function buildSubjectSummary(cards, userState) {
+  const grouped = new Map();
+
+  cards.forEach((card) => {
+    if (!grouped.has(card.subjectId)) {
+      grouped.set(card.subjectId, {
+        id: card.subjectId,
+        label: card.subjectLabel,
+        totalCards: 0,
+        remainingCards: 0,
+      });
+    }
+
+    const bucket = grouped.get(card.subjectId);
+    bucket.totalCards += 1;
+
+    const progress = userState.cards[card.id];
+    if (!progress || (progress.streak || 0) < PASSING_STREAK) {
+      bucket.remainingCards += 1;
+    }
+  });
+
+  const subjects = Array.from(grouped.values())
+    .sort((a, b) => a.label.localeCompare(b.label))
+    .map((item) => ({
+      ...item,
+      masteredCards: item.totalCards - item.remainingCards,
+    }));
+
+  return [
+    {
+      id: "all",
+      label: "All Subjects",
+      totalCards: cards.length,
+      remainingCards: cards.filter((card) => {
+        const progress = userState.cards[card.id];
+        return !progress || (progress.streak || 0) < PASSING_STREAK;
+      }).length,
+      masteredCards: cards.filter((card) => {
+        const progress = userState.cards[card.id];
+        return progress && (progress.streak || 0) >= PASSING_STREAK;
+      }).length,
+    },
+    ...subjects,
+  ];
+}
+
+function detectAnswerShape(answer) {
+  if (typeof answer !== "string") return "other";
+  if (/^\d{4}-\d{2}-\d{2}$/.test(answer)) return "iso-date";
+  if (/^[A-Za-z][A-Za-z0-9]+$/.test(answer)) return "token";
+  if (/^[a-z0-9-]+$/.test(answer)) return "slug";
+  return "other";
+}
+
 function parseTextCards(filePath, content, baseMeta) {
   const lines = content
     .split(/\r?\n/)
@@ -182,13 +367,11 @@ function parseTextCards(filePath, content, baseMeta) {
   });
 
   if (cards.length === 0) {
-    const firstImportant =
-      lines.find((line) => line.length > 24) || lines[0] || baseMeta.topic;
     cards.push(
       createCard(
         baseMeta,
         `What core idea appears in ${baseMeta.topic}?`,
-        firstImportant,
+        `Review the key concept and commands in ${baseMeta.topic}.`,
         `Review ${baseMeta.sourcePath}`,
         "concept",
       ),
@@ -202,19 +385,114 @@ function parseJsonCards(filePath, rawContent, baseMeta) {
   try {
     const value = JSON.parse(rawContent);
     const cards = [];
-    if (value && typeof value === "object") {
-      const topKeys = Object.keys(value).slice(0, 5);
-      topKeys.forEach((key) => {
-        const answer = JSON.stringify(value[key]);
-        cards.push(
-          createCard(
+    if (value && typeof value === "object" && !Array.isArray(value)) {
+      const blockedKeys = new Set(["Version", "Statement", "Id", "Sid"]);
+
+      // Prioritize meaningful IAM policy semantics over metadata keys.
+      if (Array.isArray(value.Statement) && value.Statement.length > 0) {
+        const firstStatement = value.Statement[0];
+        if (firstStatement && typeof firstStatement === "object") {
+          if (typeof firstStatement.Effect === "string") {
+            const answer = String(firstStatement.Effect);
+            cards.push({
+              ...createCard(
+                baseMeta,
+                `In ${baseMeta.topic}, what is the policy Effect in the first statement?`,
+                answer,
+                `Statement.Effect from ${baseMeta.sourcePath}`,
+                "json",
+              ),
+              jsonKey: "Effect",
+              answerShape: detectAnswerShape(answer),
+            });
+          }
+
+          if (typeof firstStatement.Action === "string") {
+            const answer = String(firstStatement.Action);
+            cards.push({
+              ...createCard(
+                baseMeta,
+                `In ${baseMeta.topic}, which Action appears in the first statement?`,
+                answer,
+                `Statement.Action from ${baseMeta.sourcePath}`,
+                "json",
+              ),
+              jsonKey: "Action",
+              answerShape: detectAnswerShape(answer),
+            });
+          }
+
+          if (
+            Array.isArray(firstStatement.Action) &&
+            firstStatement.Action.length > 0
+          ) {
+            const firstAction = firstStatement.Action.find(
+              (action) => typeof action === "string",
+            );
+            if (firstAction) {
+              const answer = String(firstAction);
+              cards.push({
+                ...createCard(
+                  baseMeta,
+                  `In ${baseMeta.topic}, which Action appears in the first statement?`,
+                  answer,
+                  `Statement.Action from ${baseMeta.sourcePath}`,
+                  "json",
+                ),
+                jsonKey: "Action",
+                answerShape: detectAnswerShape(answer),
+              });
+            }
+          }
+        }
+      }
+
+      const entries = Object.entries(value).slice(0, 10);
+
+      entries.forEach(([key, entryValue]) => {
+        if (blockedKeys.has(key)) {
+          return;
+        }
+
+        let answer = null;
+
+        if (
+          typeof entryValue === "string" ||
+          typeof entryValue === "number" ||
+          typeof entryValue === "boolean"
+        ) {
+          answer = String(entryValue);
+        }
+
+        if (
+          Array.isArray(entryValue) &&
+          entryValue.length > 0 &&
+          entryValue.length <= 4 &&
+          entryValue.every(
+            (item) =>
+              typeof item === "string" ||
+              typeof item === "number" ||
+              typeof item === "boolean",
+          )
+        ) {
+          answer = entryValue.map((item) => String(item)).join(", ");
+        }
+
+        if (!answer) {
+          return;
+        }
+
+        cards.push({
+          ...createCard(
             baseMeta,
             `In ${baseMeta.topic}, what is the value of '${key}'?`,
-            answer.length > 180 ? `${answer.slice(0, 177)}...` : answer,
+            answer,
             `JSON key '${key}' from ${baseMeta.sourcePath}`,
             "json",
           ),
-        );
+          jsonKey: key,
+          answerShape: detectAnswerShape(answer),
+        });
       });
     }
     if (cards.length > 0) return cards.slice(0, 4);
@@ -330,10 +608,60 @@ function buildCardsFromAwsLessons() {
   });
 
   const sorted = uniqueCards.sort((a, b) => a.prompt.localeCompare(b.prompt));
-  const answerPool = sorted.map((card) => card.expectedAnswer).filter(Boolean);
+  const isChoiceFriendly = (answer) => {
+    if (!answer || typeof answer !== "string") return false;
+    if (answer.length < 2 || answer.length > 80) return false;
+    if (answer.includes("\n")) return false;
+    if (/[{}\[\]]/.test(answer)) return false;
+    if (/!{4,}/.test(answer)) return false;
+    if (/(.)\1{5,}/.test(answer)) return false;
+    if (/https?:\/\//i.test(answer)) return false;
+    if (/hello from/i.test(answer)) return false;
+    return true;
+  };
+
+  const answerPool = sorted
+    .map((card) => card.expectedAnswer)
+    .filter((answer) => typeof answer === "string" && answer.length > 0);
+
+  const friendlyAnswerPool = answerPool.filter(isChoiceFriendly);
 
   const cardsWithChoices = sorted.map((card) => {
-    const distractors = answerPool
+    const sameType = sorted
+      .filter((candidate) => candidate.type === card.type)
+      .map((candidate) => candidate.expectedAnswer)
+      .filter(isChoiceFriendly);
+
+    const sameJsonKey =
+      card.type === "json" && card.jsonKey
+        ? sorted
+            .filter(
+              (candidate) =>
+                candidate.type === "json" &&
+                candidate.jsonKey === card.jsonKey &&
+                candidate.answerShape === card.answerShape,
+            )
+            .map((candidate) => candidate.expectedAnswer)
+            .filter(isChoiceFriendly)
+        : [];
+
+    const sameTopic = sorted
+      .filter((candidate) => candidate.topic === card.topic)
+      .map((candidate) => candidate.expectedAnswer)
+      .filter(isChoiceFriendly);
+
+    const poolBase =
+      sameJsonKey.length >= 3
+        ? sameJsonKey
+        : sameType.length >= 3
+          ? sameType
+          : sameTopic.length >= 3
+            ? sameTopic
+            : friendlyAnswerPool;
+
+    const pool = isChoiceFriendly(card.expectedAnswer) ? poolBase : answerPool;
+
+    const distractors = pool
       .filter((answer) => answer !== card.expectedAnswer)
       .slice(0, 20)
       .sort((a, b) =>
@@ -345,12 +673,16 @@ function buildCardsFromAwsLessons() {
       hashId(`${card.id}:${a}`).localeCompare(hashId(`${card.id}:${b}`)),
     );
 
+    const subject = getCardSubject(card);
+
     return {
       ...card,
       choices,
       correctIndex: choices.findIndex(
         (choice) => choice === card.expectedAnswer,
       ),
+      subjectId: subject.id,
+      subjectLabel: subject.label,
     };
   });
 
@@ -377,30 +709,85 @@ function getUserProgress(userId) {
 function buildStudyStats(cards, userState) {
   const totalCards = cards.length;
   let masteredCards = 0;
-  let attemptedCards = 0;
-  let needsReview = 0;
+  let reviewQueueCards = 0;
+  let unseenCards = 0;
 
   cards.forEach((card) => {
     const progress = userState.cards[card.id];
-    if (!progress) return;
-    attemptedCards += progress.attempts > 0 ? 1 : 0;
+    if (!progress || progress.attempts === 0) {
+      unseenCards += 1;
+      return;
+    }
+
     if ((progress.streak || 0) >= PASSING_STREAK) {
       masteredCards += 1;
       return;
     }
-    if (progress.attempts > 0) {
-      needsReview += 1;
-    }
+
+    reviewQueueCards += 1;
   });
+
+  const attemptMetrics = getAttemptMetrics(cards, userState);
 
   return {
     totalCards,
     masteredCards,
-    attemptedCards,
+    attemptedCards: attemptMetrics.attemptedCards,
     remainingCards: totalCards - masteredCards,
+    unseenCards,
     masteryPercent:
       totalCards > 0 ? Math.round((masteredCards / totalCards) * 100) : 0,
-    needsReview,
+    reviewQueueCards,
+    needsReview: reviewQueueCards,
+    totalAttempts: attemptMetrics.totalAttempts,
+    correctAttempts: attemptMetrics.correctAttempts,
+    incorrectAttempts: attemptMetrics.incorrectAttempts,
+    accuracyPercent: attemptMetrics.accuracyPercent,
+  };
+}
+
+function buildProgressSummary(cards, userState) {
+  const cardMap = new Map(cards.map((card) => [card.id, card]));
+
+  const answerHistory = (userState.history || [])
+    .filter((entry) => entry.action === "submitStudyAnswer")
+    .map((entry) => {
+      const cardId = entry?.input?.cardId;
+      const card = cardMap.get(cardId);
+
+      return {
+        timestamp: entry.timestamp,
+        cardId,
+        correct: entry?.output?.correct === true,
+        prompt: card?.prompt || "Unknown card",
+        subjectLabel: card?.subjectLabel || "Unknown subject",
+      };
+    })
+    .filter((entry) => !!entry.cardId);
+
+  const recentAnswers = answerHistory.slice(-10).reverse();
+
+  const trend = recentAnswers
+    .slice()
+    .reverse()
+    .map((entry) => (entry.correct ? "correct" : "incorrect"));
+
+  const mistakesBySubject = {};
+  answerHistory.forEach((entry) => {
+    if (entry.correct) return;
+    mistakesBySubject[entry.subjectLabel] =
+      (mistakesBySubject[entry.subjectLabel] || 0) + 1;
+  });
+
+  const topStrugglingSubject =
+    Object.entries(mistakesBySubject)
+      .sort((a, b) => b[1] - a[1])
+      .map(([label, mistakes]) => ({ label, mistakes }))[0] || null;
+
+  return {
+    recentAnswers,
+    trend,
+    topStrugglingSubject,
   };
 }
 
@@ -442,6 +829,8 @@ function sanitizeCardForClient(card) {
     tags: card.tags,
     sourcePath: card.sourcePath,
     type: card.type,
+    subjectId: card.subjectId,
+    subjectLabel: card.subjectLabel,
   };
 }
 
@@ -511,7 +900,18 @@ async function askOpenAiTutor(payload) {
   }
 
   const data = await response.json();
-  return data.output_text || "Tutor response unavailable.";
+
+  const outputText =
+    data.output_text ||
+    data.output
+      ?.flatMap((item) => item.content || [])
+      .map((content) => content.text || "")
+      .join("\n")
+      .trim() ||
+    data.choices?.[0]?.message?.content ||
+    "";
+
+  return outputText || "Tutor response unavailable.";
 }
 
 /**
@@ -537,8 +937,14 @@ app.get("/api/study/session", (req, res) => {
   const userId = getUserId(req);
   const cards = buildCardsFromAwsLessons();
   const userState = getUserProgress(userId);
-  const nextCard = getNextCard(cards, userState);
-  const stats = buildStudyStats(cards, userState);
+  const subjectId = req.query.subject || "all";
+  const queueId = req.query.queue || "all-due";
+  const subjectCards = filterCardsBySubject(cards, subjectId);
+  const queueCards = filterCardsByQueue(subjectCards, userState, queueId);
+  const nextCard = getNextCard(queueCards, userState);
+  const stats = buildStudyStats(subjectCards, userState);
+  const subjects = buildSubjectSummary(cards, userState);
+  const queues = buildQueueSummary(subjectCards, userState);
 
   appendInteractionLog({
     timestamp: new Date().toISOString(),
@@ -549,6 +955,10 @@ app.get("/api/study/session", (req, res) => {
   });
 
   res.json({
+    activeSubject: subjectId,
+    activeQueue: queueId,
+    subjects,
+    queues,
     stats,
     card: nextCard ? sanitizeCardForClient(nextCard) : null,
   });
@@ -562,7 +972,7 @@ app.post("/api/study/answer", (req, res) => {
   const userId = getUserId(req);
   const cards = buildCardsFromAwsLessons();
   const userState = getUserProgress(userId);
-  const { cardId, choiceIndex } = req.body;
+  const { cardId, choiceIndex, subject, queue } = req.body;
 
   if (!cardId || typeof choiceIndex !== "number") {
     return res
@@ -586,8 +996,14 @@ app.post("/api/study/answer", (req, res) => {
 
   saveProgressStore();
 
-  const nextCard = correct ? getNextCard(cards, userState) : card;
-  const stats = buildStudyStats(cards, userState);
+  const activeSubject = subject || "all";
+  const activeQueue = queue || "all-due";
+  const subjectCards = filterCardsBySubject(cards, activeSubject);
+  const queueCards = filterCardsByQueue(subjectCards, userState, activeQueue);
+  const nextCard = correct ? getNextCard(queueCards, userState) : card;
+  const stats = buildStudyStats(subjectCards, userState);
+  const subjects = buildSubjectSummary(cards, userState);
+  const queues = buildQueueSummary(subjectCards, userState);
 
   appendInteractionLog({
     timestamp: new Date().toISOString(),
@@ -609,6 +1025,10 @@ app.post("/api/study/answer", (req, res) => {
     sourcePath: card.sourcePath,
     streak: cardState.streak,
     mastered: cardState.streak >= PASSING_STREAK,
+    activeSubject,
+    activeQueue,
+    subjects,
+    queues,
     stats,
     card: nextCard ? sanitizeCardForClient(nextCard) : null,
   });
@@ -654,12 +1074,60 @@ app.get("/api/progress", (req, res) => {
   const userId = getUserId(req);
   const userState = getUserProgress(userId);
   const cards = buildCardsFromAwsLessons();
-  const stats = buildStudyStats(cards, userState);
+  const subjectId = req.query.subject || "all";
+  const subjectCards = filterCardsBySubject(cards, subjectId);
+  const stats = buildStudyStats(subjectCards, userState);
+  const summary = buildProgressSummary(subjectCards, userState);
 
   res.json({
+    activeSubject: subjectId,
     stats,
+    summary,
     notes: userState.notes.slice(-20).reverse(),
     history: userState.history.slice(-40).reverse(),
+  });
+});
+
+/**
+ * POST /api/progress/reset
+ * Resets study tracking for a specific subject (or all subjects).
+ */
+app.post("/api/progress/reset", (req, res) => {
+  const userId = getUserId(req);
+  const userState = getUserProgress(userId);
+  const cards = buildCardsFromAwsLessons();
+  const subjectId = req.body.subject || "all";
+
+  const subjectCards = filterCardsBySubject(cards, subjectId);
+  const cardIds = new Set(subjectCards.map((card) => card.id));
+
+  Object.keys(userState.cards || {}).forEach((cardId) => {
+    if (subjectId === "all" || cardIds.has(cardId)) {
+      delete userState.cards[cardId];
+    }
+  });
+
+  userState.history = (userState.history || []).filter((entry) => {
+    if (entry.action !== "submitStudyAnswer") return true;
+    const cardId = entry?.input?.cardId;
+    if (!cardId) return true;
+    return !(subjectId === "all" || cardIds.has(cardId));
+  });
+
+  saveProgressStore();
+
+  appendInteractionLog({
+    timestamp: new Date().toISOString(),
+    userId,
+    action: "resetProgress",
+    parameters: { subjectId },
+    outcome: "success",
+  });
+
+  res.json({
+    success: true,
+    subjectId,
+    resetCardCount: subjectCards.length,
   });
 });
 
