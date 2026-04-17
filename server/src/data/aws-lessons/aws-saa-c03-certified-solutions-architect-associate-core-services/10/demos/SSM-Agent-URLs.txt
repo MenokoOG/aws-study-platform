@@ -1,0 +1,3 @@
+Session Manager Prerequsites:	https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager-prerequisites.html
+
+Manually installing and uninstalling SSM Agent on EC2 instances for Linux:	https://docs.aws.amazon.com/systems-manager/latest/userguide/manually-install-ssm-agent-linux.html

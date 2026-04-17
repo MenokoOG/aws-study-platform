@@ -1,0 +1,19 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "AllowCloudUserToGetObjects",
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": "arn:aws:iam::123456789102:user/cloud_user"
+            },
+            "Action": [
+                "s3:*"
+            ],
+            "Resource": [
+                "arn:aws:s3:::s3-bucket-policy-demo-23o14h",
+                "arn:aws:s3:::s3-bucket-policy-demo-23o14h/*"
+            ]
+        }
+    ]
+}

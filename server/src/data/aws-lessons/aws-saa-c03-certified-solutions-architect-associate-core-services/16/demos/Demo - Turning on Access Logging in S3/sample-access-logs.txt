@@ -1,0 +1,34 @@
+# Log Record (Actual format/single line)
+
+79a59df900b949e55d96a1e698fbacedfd6e09d98eacf8f8d5218e7cd47ef2be source-bucket-23k4h32ik4h [06/Sep/2024:00:00:38 +0000] 192.0.2.3 79a59df900b949e55d96a1e698fbacedfd6e09d98eacf8f8d5218e7cd47ef2be 3E57427F3EXAMPLE REST.GET.VERSIONING our_file.txt "GET /source-bucket-23k4h32ik4h?versioning HTTP/1.1" 200 - 113 - 7 - "-" "S3Console/0.4" - s9lzHYrFp76ZVxRcpX9+5cjAnEH2ROuNkd2BHfIa6UkFVdtjf5mKR3/eTPFvsiP/XV/VLi31234= SigV4 ECDHE-RSA-AES128-GCM-SHA256 AuthHeader source-bucket-23k4h32ik4h.s3.us-east-1.amazonaws.com TLSV1.2 - Yes
+
+---------------------------------------------------------------------
+
+# Log Record split so that each field is on a new line for readability and with fields labeled
+
+Bucket Owner:       79a59df900b949e55d96a1e698fbacedfd6e09d98eacf8f8d5218e7cd47ef2be
+Bucket:             source-bucket-23k4h32ik4h
+Time:               [06/Sep/2024:00:00:38 +0000]
+Remote IP:          192.0.2.3
+Requester:          79a59df900b949e55d96a1e698fbacedfd6e09d98eacf8f8d5218e7cd47ef2be
+Request ID:         3E57427F3EXAMPLE
+Operation:          REST.GET.VERSIONING
+Key:                our_file.txt
+Request-URI:        "GET /source-bucket-23k4h32ik4h?versioning HTTP/1.1"
+HTTP Status:        200
+Error Code:         -
+Bytes Sent:         113
+Object Size:        -
+Total Time:         7
+Turn-Around Time:   -
+Referer:            "-"
+User-Agent:         "S3Console/0.4"
+Version Id:         -
+Host Id:            s9lzHYrFp76ZVxRcpX9+5cjAnEH2ROuNkd2BHfIa6UkFVdtjf5mKR3/eTPFvsiP/XV/VLi31234=
+Signature Version:  SigV4
+Cipher Suite:       ECDHE-RSA-AES128-GCM-SHA256
+Auth Type:          AuthHeader
+Host Header:        source-bucket-23k4h32ik4h.s3.us-east-1.amazonaws.com
+TLS Version:        TLSV1.2
+Access Point ARN:   -
+aclRequired:        Yes

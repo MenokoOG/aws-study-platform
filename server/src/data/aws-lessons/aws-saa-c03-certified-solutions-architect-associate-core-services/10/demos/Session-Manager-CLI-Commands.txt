@@ -1,0 +1,10 @@
+-- Session Manager CLI Commands
+
+--- Configure AWS CLI
+
+aws configure
+
+
+--- Start the SSM Session (Requires plugin install)
+
+aws ssm start-session --target "instance-id" --region $AWS_REGION

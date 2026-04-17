@@ -1,0 +1,37 @@
+EFS Demo Steps and Info
+=======================
+
+This has only been tested on AML2023!
+
+
+> Create the mount directory
+sudo mkdir /efs
+
+> Get updates
+sudo yum -y update 
+
+> Install the NFS client.
+sudo yum -y install nfs-utils
+
+> If you're using an Ubuntu Amazon EC2 AMI, install the NFS client with the following command.
+sudo apt-get -y install nfs-common
+
+> Start the NFS service using the following commands
+sudo systemctl start nfs-server
+
+> Verify that the NFS service started
+sudo systemctl status nfs-server
+
+> change permissions on the mounted target/file system
+cd /efs && sudo chmod go+rw .
+
+
+
+Mounting on Amazon EC2 with a DNS name
+======================================
+
+> Mount the file system using the file system DNS name (YOU MUST CHANGE THE VALIUES FOR THE DNS NAME)
+sudo mount -t nfs -o nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport file-system-id.efs.aws-region.amazonaws.com:/ /efs-mount-point
+
+> EXAMPLE COMMAND
+sudo mount -t nfs -o nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport fs-03bd3ffff2efb2d08.efs.us-east-1.amazonaws.com:/ /efs

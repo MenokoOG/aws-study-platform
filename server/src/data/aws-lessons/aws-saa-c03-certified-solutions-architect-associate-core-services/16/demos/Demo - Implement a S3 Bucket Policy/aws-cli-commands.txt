@@ -1,0 +1,38 @@
+S3 Bucket Policy CLI Calls
+==========================
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+! Most of these require that you have your AWS CLI configured !
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+# Get which user you are
+aws sts get-caller-identity
+
+
+# Get which user you are as a profile
+aws sts get-caller-identity --profile ec2_user
+
+
+# List all buckets in account
+aws s3 ls
+
+
+# List objects in the bucket
+aws s3 ls s3-bucket-policy-demo-23o14h
+
+
+# Get object from bucket (you must change the values here)
+aws s3api get-object --bucket s3-bucket-policy-demo-23o14h --key ubuntu.png cloud_user_ubuntu.png
+
+
+# Get object from bucket with different profile (you must change the values here)
+aws s3api get-object --bucket s3-bucket-policy-demo-23o14h --key ubuntu.png ec2_user_ubuntu.png --profile ec2_user
+
+
+# Get object from bucket again with new name(you must change the values here)
+aws s3api get-object --bucket s3-bucket-policy-demo-23o14h --key ubuntu.png policy_cloud_user_ubuntu.png
+
+
+# Get object from bucket again with new name and other profile (you must change the values here)
+aws s3api get-object --bucket s3-bucket-policy-demo-23o14h --key ubuntu.png policy_ec2_user_ubuntu.png --profile ec2_user

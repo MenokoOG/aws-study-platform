@@ -1,0 +1,46 @@
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+THIS DOCUMENT ASSUMES YOU HAVE ALREADY CREATED YOUR SOURCE AND DESTINATION S3 BUCKETS
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+Creating the Lambda Function
+============================
+
+1. Create a new Lambda function and author from scratch
+2. Name your function and select Python3.12 as the runtime, and the x86_64 architecture
+3. Under Permissions, choose to change the default execution role and choose to "Create a new role from AWS policy templates"
+4. Give your role a name and choose the "Amazon S3 object read-only permissions" policy template
+5. Create function
+6. Navigate to the "Configuration" tab below the overview pane
+7. Find and select "Environment variables" within the Configuration menu
+8. Edit the Environment variables
+9. Add a new Environment variable with the following info:
+	Key:	DESTINATION_BUCKET
+	Value:	destination_bucket_name 
+10. Save the environment variable
+11. Find "General configuration" under the same Configuration menu
+12. Edit the General configuration
+13. Change the "Timeout" value to be 30 seconds, then choose Save
+14. Navigate back to the "Code" menu for your function
+15. Scroll to the bottom and find "Layers"
+16. Choose to "Add a layer"
+17. Under "Choose a layer", select "Specify an ARN"
+18. Enter "arn:aws:lambda:us-east-1:770693421928:layer:Klayers-p312-Pillow:3" and choose verify
+19. Once verified, choose "Add"
+
+
+Editing the IAM Role
+====================
+
+1. Navigate to your S3 bucket that you are going to use as the destination, and copy the ARN
+2. After copying the S3 ARN, navigate to IAM and view your new Lambda IAM Role you created
+3. Once viewing the role, choose "Add permissions" and create a new inline policy
+4. Within the policy, grant the IAM role permissions to PutObjects into your destination S3 bucket
+	4a. Example resource ARN: 	arn:aws:s3:::bucket-name-here/*
+5. Navigate back to AWS Lambda and verify the permissions are correct under "Configuration" > "Permissions"
+
+
+
+THE REST OF THE DEMO IS ACHIEVABLE VIA FOLLOWING ALONG

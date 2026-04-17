@@ -1,0 +1,8 @@
+> nslookup IPv4 values
+nslookup DNS_RECORD_NAME
+
+> nslookup IPv6 values
+nslookup -q=aaaa DNS_RECORD_NAME
+
+> navigate to IPv6 site (if supported)
+http://[IPV6_ADDRESS_GOES_HERE]

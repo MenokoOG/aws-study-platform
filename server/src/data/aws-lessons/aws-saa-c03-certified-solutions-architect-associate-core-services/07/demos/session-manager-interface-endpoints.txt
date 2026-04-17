@@ -1,0 +1,3 @@
+com.amazonaws.us-east-1.ssm
+com.amazonaws.us-east-1.ssmmessages
+com.amazonaws.us-east-1.ec2messages

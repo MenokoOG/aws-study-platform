@@ -1,0 +1,17 @@
+- Session Manager Commands
+
+-- Show the ssm agent running status
+
+sudo systemctl status amazon-ssm-agent
+
+
+
+-- View how to configure the agent
+
+sudo systemctl edit amazon-ssm-agent
+
+
+
+-- View the log location
+
+sudo su; cd /var/log/amazon/ssm/

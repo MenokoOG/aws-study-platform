@@ -1,0 +1,8 @@
+Commands to stress test our EC2
+===============================
+
+> Install stress on AML2023
+sudo yum install stress -y
+
+> Run stress test on 1 vCPU
+stress --cpu 1

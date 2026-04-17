@@ -1,0 +1,21 @@
+{
+    "Version": "2012-10-17",
+    "Id": "S3PolicyIPRestriction",
+    "Statement": [
+        {
+            "Sid": "OnlyAllowIP",
+            "Effect": "Allow",
+            "Principal": "*",
+            "Action": "s3:*",
+            "Resource": [
+                "arn:aws:s3:::your-bucket-name",
+                "arn:aws:s3:::your-bucket-name/*"
+            ],
+            "Condition": {
+                "IpAddress": {
+                    "aws:SourceIp": "YOUR_IP_RANGE"
+                }
+            }
+        }
+    ]
+}

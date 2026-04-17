@@ -1,0 +1,39 @@
+# Instructions for mounting the original data volume (unencrypted)
+
+# List the available drives:
+lsblk
+
+# View the format version of existing disks
+df -Th
+
+# Format new drive to match those (YOUR DEV DEVICE MIGHT BE DIFFERENT!)
+sudo mkfs.xfs /dev/nvme1n1
+
+# Create a mount point
+sudo mkdir /mnt/my_old_drive
+
+# Mount the drive (YOUR DEV DEVICE MIGHT BE DIFFERENT!)
+sudo mount /dev/nvme1n1 /mnt/my_old_drive
+
+# Change permissions of mount to allow writes
+sudo chown ec2-user:ec2-user /mnt/my_old_drive/
+
+# Write a file to the drive
+touch new_file.txt /mnt/my_old_drive
+
+---
+---
+
+# Instructions for mounting the new data volume (encrypted)
+
+# List the available drives:
+lsblk
+
+# Create a mount point
+sudo mkdir /mnt/my_new_drive
+
+# Mount the drive (YOUR DEV DEVICE MIGHT BE DIFFERENT!)
+sudo mount /dev/nvme1n1 /mnt/my_new_drive
+
+# Read the file! (YOUR DEV DEVICE MIGHT BE DIFFERENT!)
+cat /mnt/my_new_drive/new_file.txt

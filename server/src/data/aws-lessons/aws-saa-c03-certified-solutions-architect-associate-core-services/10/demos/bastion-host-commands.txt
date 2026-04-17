@@ -1,0 +1,18 @@
+# Commands used to SSH into the bastion host
+
+## Follow these steps if you want to leverage the ssh-agent and local authentication keychain (forwarding of the credentials)
+
+1. Change the permission of the key pair:			chmod 600 <PATH_TO_KEY_PAIR>
+2. Add the key to your keychain by running:			ssh-add <PATH_TO_KEY_PAIR>
+3. Verify the key has been added by running:		ssh-add -L
+4. Connect to the bastion with the creds:			ssh -A ec2-user@<BASTION_HOST_PUBLIC_IP>
+5. Verify the key has been forwarded by running:	ssh-add -L
+6. Connect to the private server:					ssh ec2-user@<PRIVATE_SERVER_PRIVATE_IP>
+
+
+## Follow these steps to manually connect to the bastion host and point to the identity file (not recommended)
+
+1. Change the permission of the key pair:			chmod 600 <PATH_TO_KEY_PAIR>
+2. 4. Connect to the bastion with the creds:		ssh -i <PATH_TO_KEY_PAIR> ec2-user@<BASTION_HOST_PUBLIC_IP>
+3. Now you need to copy the key pair to the Bastion host by uploading it via SCP or by copying and pasting the contents manually into a new file.
+4. Then, SSH into the private server:			ssh -i <PATH_TO_KEY_PAIR_ON_BASTION>ec2-user@<PRIVATE_SERVER_PRIVATE_IP>

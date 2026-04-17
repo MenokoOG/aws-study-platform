@@ -1,0 +1,6 @@
+Important Links
+---------------
+
+Shared Responsibility Model	-->	https://aws.amazon.com/compliance/shared-responsibility-model/
+
+AWS Well-Architected	-->	https://aws.amazon.com/architecture/well-architected
