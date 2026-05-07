@@ -8,6 +8,12 @@
           "lessonId": null,
           "text": "it is still got bugs for this app",
           "timestamp": "2026-04-17T07:52:42.486Z"
+        },
+        {
+          "cardId": null,
+          "lessonId": null,
+          "text": "this is actually cool and i will use it and cool case study.",
+          "timestamp": "2026-05-07T19:59:25.625Z"
         }
       ],
       "history": [
@@ -20,9 +26,71 @@
           "output": {
             "success": true
           }
+        },
+        {
+          "timestamp": "2026-05-07T19:58:58.227Z",
+          "action": "submitStudyAnswer",
+          "input": {
+            "cardId": "550cfd70a0a2",
+            "choiceIndex": 0
+          },
+          "output": {
+            "correct": true
+          }
+        },
+        {
+          "timestamp": "2026-05-07T19:59:25.625Z",
+          "action": "recordNote",
+          "input": {
+            "cardId": null
+          },
+          "output": {
+            "success": true
+          }
+        },
+        {
+          "timestamp": "2026-05-07T19:59:48.354Z",
+          "action": "submitStudyAnswer",
+          "input": {
+            "cardId": "8e7475a55219",
+            "choiceIndex": 1
+          },
+          "output": {
+            "correct": true
+          }
+        },
+        {
+          "timestamp": "2026-05-07T20:00:16.229Z",
+          "action": "submitStudyAnswer",
+          "input": {
+            "cardId": "454194457b4b",
+            "choiceIndex": 3
+          },
+          "output": {
+            "correct": true
+          }
         }
       ],
-      "cards": {}
+      "cards": {
+        "550cfd70a0a2": {
+          "attempts": 1,
+          "streak": 1,
+          "lastCorrect": true,
+          "lastAttemptAt": "2026-05-07T19:58:58.227Z"
+        },
+        "8e7475a55219": {
+          "attempts": 1,
+          "streak": 1,
+          "lastCorrect": true,
+          "lastAttemptAt": "2026-05-07T19:59:48.354Z"
+        },
+        "454194457b4b": {
+          "attempts": 1,
+          "streak": 1,
+          "lastCorrect": true,
+          "lastAttemptAt": "2026-05-07T20:00:16.229Z"
+        }
+      }
     },
     "local-user": {
       "lessons": {},
