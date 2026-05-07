@@ -69,6 +69,325 @@
           "output": {
             "correct": true
           }
+        },
+        {
+          "timestamp": "2026-05-07T20:26:37.873Z",
+          "action": "submitStudyAnswer",
+          "input": {
+            "cardId": "6b56e2b5df07",
+            "choiceIndex": 1
+          },
+          "output": {
+            "correct": true
+          }
+        },
+        {
+          "timestamp": "2026-05-07T20:27:03.359Z",
+          "action": "submitStudyAnswer",
+          "input": {
+            "cardId": "666b4d8867f3",
+            "choiceIndex": 3
+          },
+          "output": {
+            "correct": true
+          }
+        },
+        {
+          "timestamp": "2026-05-07T20:27:13.480Z",
+          "action": "submitStudyAnswer",
+          "input": {
+            "cardId": "280e38c24cbf",
+            "choiceIndex": 1
+          },
+          "output": {
+            "correct": true
+          }
+        },
+        {
+          "timestamp": "2026-05-07T20:27:28.105Z",
+          "action": "submitStudyAnswer",
+          "input": {
+            "cardId": "ba420fc6eca3",
+            "choiceIndex": 0
+          },
+          "output": {
+            "correct": false
+          }
+        },
+        {
+          "timestamp": "2026-05-07T20:27:41.296Z",
+          "action": "submitStudyAnswer",
+          "input": {
+            "cardId": "d965ef69bc7e",
+            "choiceIndex": 0
+          },
+          "output": {
+            "correct": true
+          }
+        },
+        {
+          "timestamp": "2026-05-07T20:28:32.712Z",
+          "action": "submitStudyAnswer",
+          "input": {
+            "cardId": "a63943458cea",
+            "choiceIndex": 3
+          },
+          "output": {
+            "correct": true
+          }
+        },
+        {
+          "timestamp": "2026-05-07T20:28:47.110Z",
+          "action": "submitStudyAnswer",
+          "input": {
+            "cardId": "331150d2fcd9",
+            "choiceIndex": 1
+          },
+          "output": {
+            "correct": true
+          }
+        },
+        {
+          "timestamp": "2026-05-07T20:29:09.868Z",
+          "action": "submitStudyAnswer",
+          "input": {
+            "cardId": "f39f1ae7e363",
+            "choiceIndex": 2
+          },
+          "output": {
+            "correct": false
+          }
+        },
+        {
+          "timestamp": "2026-05-07T20:29:21.689Z",
+          "action": "submitStudyAnswer",
+          "input": {
+            "cardId": "f39f1ae7e363",
+            "choiceIndex": 3
+          },
+          "output": {
+            "correct": true
+          }
+        },
+        {
+          "timestamp": "2026-05-07T20:30:06.490Z",
+          "action": "submitStudyAnswer",
+          "input": {
+            "cardId": "e9da201b4970",
+            "choiceIndex": 0
+          },
+          "output": {
+            "correct": true
+          }
+        },
+        {
+          "timestamp": "2026-05-07T20:30:13.238Z",
+          "action": "submitStudyAnswer",
+          "input": {
+            "cardId": "5ce1025ef25c",
+            "choiceIndex": 3
+          },
+          "output": {
+            "correct": true
+          }
+        },
+        {
+          "timestamp": "2026-05-07T20:30:18.631Z",
+          "action": "submitStudyAnswer",
+          "input": {
+            "cardId": "caf2e962546e",
+            "choiceIndex": 0
+          },
+          "output": {
+            "correct": true
+          }
+        },
+        {
+          "timestamp": "2026-05-07T20:30:29.259Z",
+          "action": "submitStudyAnswer",
+          "input": {
+            "cardId": "271c25418470",
+            "choiceIndex": 3
+          },
+          "output": {
+            "correct": false
+          }
+        },
+        {
+          "timestamp": "2026-05-07T20:30:39.056Z",
+          "action": "submitStudyAnswer",
+          "input": {
+            "cardId": "271c25418470",
+            "choiceIndex": 3
+          },
+          "output": {
+            "correct": false
+          }
+        },
+        {
+          "timestamp": "2026-05-07T20:30:42.916Z",
+          "action": "submitStudyAnswer",
+          "input": {
+            "cardId": "271c25418470",
+            "choiceIndex": 0
+          },
+          "output": {
+            "correct": true
+          }
+        },
+        {
+          "timestamp": "2026-05-07T20:30:49.752Z",
+          "action": "submitStudyAnswer",
+          "input": {
+            "cardId": "b382a6ce115a",
+            "choiceIndex": 0
+          },
+          "output": {
+            "correct": true
+          }
+        },
+        {
+          "timestamp": "2026-05-07T20:30:55.749Z",
+          "action": "submitStudyAnswer",
+          "input": {
+            "cardId": "fa7344cb9ace",
+            "choiceIndex": 3
+          },
+          "output": {
+            "correct": true
+          }
+        },
+        {
+          "timestamp": "2026-05-07T20:30:59.494Z",
+          "action": "submitStudyAnswer",
+          "input": {
+            "cardId": "f6721f2d6b48",
+            "choiceIndex": 0
+          },
+          "output": {
+            "correct": true
+          }
+        },
+        {
+          "timestamp": "2026-05-07T20:31:10.479Z",
+          "action": "submitStudyAnswer",
+          "input": {
+            "cardId": "06cb2a1844ab",
+            "choiceIndex": 2
+          },
+          "output": {
+            "correct": false
+          }
+        },
+        {
+          "timestamp": "2026-05-07T20:31:21.526Z",
+          "action": "submitStudyAnswer",
+          "input": {
+            "cardId": "06cb2a1844ab",
+            "choiceIndex": 3
+          },
+          "output": {
+            "correct": true
+          }
+        },
+        {
+          "timestamp": "2026-05-07T20:31:27.991Z",
+          "action": "submitStudyAnswer",
+          "input": {
+            "cardId": "091f623c08a5",
+            "choiceIndex": 2
+          },
+          "output": {
+            "correct": false
+          }
+        },
+        {
+          "timestamp": "2026-05-07T20:31:34.256Z",
+          "action": "submitStudyAnswer",
+          "input": {
+            "cardId": "091f623c08a5",
+            "choiceIndex": 3
+          },
+          "output": {
+            "correct": true
+          }
+        },
+        {
+          "timestamp": "2026-05-07T20:31:46.372Z",
+          "action": "submitStudyAnswer",
+          "input": {
+            "cardId": "486b672bf729",
+            "choiceIndex": 1
+          },
+          "output": {
+            "correct": false
+          }
+        },
+        {
+          "timestamp": "2026-05-07T20:31:50.849Z",
+          "action": "submitStudyAnswer",
+          "input": {
+            "cardId": "486b672bf729",
+            "choiceIndex": 0
+          },
+          "output": {
+            "correct": true
+          }
+        },
+        {
+          "timestamp": "2026-05-07T20:31:54.370Z",
+          "action": "submitStudyAnswer",
+          "input": {
+            "cardId": "47a09acb29b4",
+            "choiceIndex": 1
+          },
+          "output": {
+            "correct": true
+          }
+        },
+        {
+          "timestamp": "2026-05-07T20:32:05.418Z",
+          "action": "submitStudyAnswer",
+          "input": {
+            "cardId": "e399dd376ae2",
+            "choiceIndex": 3
+          },
+          "output": {
+            "correct": true
+          }
+        },
+        {
+          "timestamp": "2026-05-07T20:32:08.879Z",
+          "action": "submitStudyAnswer",
+          "input": {
+            "cardId": "f9ac11c8c07d",
+            "choiceIndex": 1
+          },
+          "output": {
+            "correct": true
+          }
+        },
+        {
+          "timestamp": "2026-05-07T20:32:17.056Z",
+          "action": "submitStudyAnswer",
+          "input": {
+            "cardId": "182e0a4b36c2",
+            "choiceIndex": 1
+          },
+          "output": {
+            "correct": false
+          }
+        },
+        {
+          "timestamp": "2026-05-07T20:32:20.236Z",
+          "action": "submitStudyAnswer",
+          "input": {
+            "cardId": "182e0a4b36c2",
+            "choiceIndex": 3
+          },
+          "output": {
+            "correct": true
+          }
         }
       ],
       "cards": {
@@ -89,6 +408,138 @@
           "streak": 1,
           "lastCorrect": true,
           "lastAttemptAt": "2026-05-07T20:00:16.229Z"
+        },
+        "6b56e2b5df07": {
+          "attempts": 1,
+          "streak": 1,
+          "lastCorrect": true,
+          "lastAttemptAt": "2026-05-07T20:26:37.873Z"
+        },
+        "666b4d8867f3": {
+          "attempts": 1,
+          "streak": 1,
+          "lastCorrect": true,
+          "lastAttemptAt": "2026-05-07T20:27:03.359Z"
+        },
+        "280e38c24cbf": {
+          "attempts": 1,
+          "streak": 1,
+          "lastCorrect": true,
+          "lastAttemptAt": "2026-05-07T20:27:13.480Z"
+        },
+        "ba420fc6eca3": {
+          "attempts": 1,
+          "streak": 0,
+          "lastCorrect": false,
+          "lastAttemptAt": "2026-05-07T20:27:28.105Z"
+        },
+        "d965ef69bc7e": {
+          "attempts": 1,
+          "streak": 1,
+          "lastCorrect": true,
+          "lastAttemptAt": "2026-05-07T20:27:41.296Z"
+        },
+        "a63943458cea": {
+          "attempts": 1,
+          "streak": 1,
+          "lastCorrect": true,
+          "lastAttemptAt": "2026-05-07T20:28:32.712Z"
+        },
+        "331150d2fcd9": {
+          "attempts": 1,
+          "streak": 1,
+          "lastCorrect": true,
+          "lastAttemptAt": "2026-05-07T20:28:47.110Z"
+        },
+        "f39f1ae7e363": {
+          "attempts": 2,
+          "streak": 1,
+          "lastCorrect": true,
+          "lastAttemptAt": "2026-05-07T20:29:21.689Z"
+        },
+        "e9da201b4970": {
+          "attempts": 1,
+          "streak": 1,
+          "lastCorrect": true,
+          "lastAttemptAt": "2026-05-07T20:30:06.490Z"
+        },
+        "5ce1025ef25c": {
+          "attempts": 1,
+          "streak": 1,
+          "lastCorrect": true,
+          "lastAttemptAt": "2026-05-07T20:30:13.238Z"
+        },
+        "caf2e962546e": {
+          "attempts": 1,
+          "streak": 1,
+          "lastCorrect": true,
+          "lastAttemptAt": "2026-05-07T20:30:18.631Z"
+        },
+        "271c25418470": {
+          "attempts": 3,
+          "streak": 1,
+          "lastCorrect": true,
+          "lastAttemptAt": "2026-05-07T20:30:42.916Z"
+        },
+        "b382a6ce115a": {
+          "attempts": 1,
+          "streak": 1,
+          "lastCorrect": true,
+          "lastAttemptAt": "2026-05-07T20:30:49.752Z"
+        },
+        "fa7344cb9ace": {
+          "attempts": 1,
+          "streak": 1,
+          "lastCorrect": true,
+          "lastAttemptAt": "2026-05-07T20:30:55.749Z"
+        },
+        "f6721f2d6b48": {
+          "attempts": 1,
+          "streak": 1,
+          "lastCorrect": true,
+          "lastAttemptAt": "2026-05-07T20:30:59.494Z"
+        },
+        "06cb2a1844ab": {
+          "attempts": 2,
+          "streak": 1,
+          "lastCorrect": true,
+          "lastAttemptAt": "2026-05-07T20:31:21.526Z"
+        },
+        "091f623c08a5": {
+          "attempts": 2,
+          "streak": 1,
+          "lastCorrect": true,
+          "lastAttemptAt": "2026-05-07T20:31:34.256Z"
+        },
+        "486b672bf729": {
+          "attempts": 2,
+          "streak": 1,
+          "lastCorrect": true,
+          "lastAttemptAt": "2026-05-07T20:31:50.849Z"
+        },
+        "47a09acb29b4": {
+          "attempts": 1,
+          "streak": 1,
+          "lastCorrect": true,
+          "lastAttemptAt": "2026-05-07T20:31:54.370Z"
+        },
+        "e399dd376ae2": {
+          "attempts": 1,
+          "streak": 1,
+          "lastCorrect": true,
+          "lastAttemptAt": "2026-05-07T20:32:05.418Z"
+        },
+        "f9ac11c8c07d": {
+          "attempts": 1,
+          "streak": 1,
+          "lastCorrect": true,
+          "lastAttemptAt": "2026-05-07T20:32:08.879Z"
+        },
+        "182e0a4b36c2": {
+          "attempts": 2,
+          "streak": 1,
+          "lastCorrect": true,
+          "lastAttemptAt": "2026-05-07T20:32:20.236Z"
         }
       }
     },

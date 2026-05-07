@@ -34,6 +34,8 @@ function App() {
   const [noteStatus, setNoteStatus] = useState("");
   const [tutorReply, setTutorReply] = useState("");
   const [tutorLoading, setTutorLoading] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+  const [refreshResult, setRefreshResult] = useState("");
 
   const headers = useMemo(() => ({ "x-user-id": userId }), [userId]);
 
@@ -106,6 +108,22 @@ function App() {
       );
     } finally {
       setLoading(false);
+    }
+  };
+
+  const refreshMaterial = async () => {
+    setRefreshing(true);
+    setRefreshResult("");
+    try {
+      const response = await axios.post("/api/study/refresh", {}, { headers });
+      const msg = response.data.message || "Deck refreshed";
+      setRefreshResult(msg);
+      setTimeout(() => setRefreshResult(""), 4000);
+      await loadSession(subjectId, queueId, true);
+    } catch (err) {
+      setError("Could not refresh material. Check that the server is running.");
+    } finally {
+      setRefreshing(false);
     }
   };
 
@@ -323,13 +341,13 @@ function App() {
                 {(subjects.length > 0
                   ? subjects
                   : [
-                      {
-                        id: "all",
-                        label: "All Subjects",
-                        remainingCards: 0,
-                        totalCards: 0,
-                      },
-                    ]
+                    {
+                      id: "all",
+                      label: "All Subjects",
+                      remainingCards: 0,
+                      totalCards: 0,
+                    },
+                  ]
                 ).map((subject) => (
                   <option key={subject.id} value={subject.id}>
                     {subject.label} ({subject.remainingCards}/
@@ -349,12 +367,12 @@ function App() {
                 {(queues.length > 0
                   ? queues
                   : [
-                      {
-                        id: "all-due",
-                        label: "All Due",
-                        count: 0,
-                      },
-                    ]
+                    {
+                      id: "all-due",
+                      label: "All Due",
+                      count: 0,
+                    },
+                  ]
                 ).map((queue) => (
                   <option key={queue.id} value={queue.id}>
                     {queue.label} ({queue.count})
@@ -390,8 +408,21 @@ function App() {
               >
                 Reset Everything
               </button>
+              <button
+                className="rounded-xl border border-emerald-300 bg-emerald-50 px-3 py-2 text-xs font-semibold text-emerald-700 transition hover:bg-emerald-100 disabled:opacity-40"
+                disabled={refreshing || loading}
+                onClick={refreshMaterial}
+              >
+                {refreshing ? "Refreshing…" : "Refresh Material"}
+              </button>
             </div>
           </div>
+
+          {refreshResult && (
+            <p className="mt-2 text-xs font-medium text-emerald-700">
+              {refreshResult}
+            </p>
+          )}
 
           {resetStatus && (
             <p className="mt-2 text-xs font-medium text-rose-700">
@@ -458,11 +489,10 @@ function App() {
                     progressSummary.trend.map((item, idx) => (
                       <span
                         key={`${item}-${idx}`}
-                        className={`rounded-full px-2 py-1 text-xs font-semibold ${
-                          item === "correct"
+                        className={`rounded-full px-2 py-1 text-xs font-semibold ${item === "correct"
                             ? "bg-emerald-100 text-emerald-700"
                             : "bg-rose-100 text-rose-700"
-                        }`}
+                          }`}
                       >
                         {item === "correct" ? "R" : "W"}
                       </span>
@@ -570,11 +600,10 @@ function App() {
                   return (
                     <button
                       key={`${card.id}-${index}`}
-                      className={`w-full rounded-2xl border px-4 py-3 text-left text-sm transition ${
-                        selected
+                      className={`w-full rounded-2xl border px-4 py-3 text-left text-sm transition ${selected
                           ? "border-orange-500 bg-orange-100 text-slate-900"
                           : "border-slate-200 bg-white hover:border-orange-300 hover:bg-orange-50"
-                      }`}
+                        }`}
                       onClick={() => setSelectedChoice(index)}
                     >
                       {choice}
@@ -676,11 +705,10 @@ function App() {
 function StatChip({ label, value, accent = false }) {
   return (
     <div
-      className={`rounded-xl border px-3 py-2 ${
-        accent
+      className={`rounded-xl border px-3 py-2 ${accent
           ? "border-orange-300 bg-orange-100 text-orange-800"
           : "border-slate-200 bg-slate-50 text-slate-700"
-      }`}
+        }`}
     >
       <p className="text-[11px] uppercase tracking-[0.18em]">{label}</p>
       <p className="mt-1 font-display text-xl leading-none">{value}</p>

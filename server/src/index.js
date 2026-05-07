@@ -635,14 +635,14 @@ function buildCardsFromAwsLessons() {
     const sameJsonKey =
       card.type === "json" && card.jsonKey
         ? sorted
-            .filter(
-              (candidate) =>
-                candidate.type === "json" &&
-                candidate.jsonKey === card.jsonKey &&
-                candidate.answerShape === card.answerShape,
-            )
-            .map((candidate) => candidate.expectedAnswer)
-            .filter(isChoiceFriendly)
+          .filter(
+            (candidate) =>
+              candidate.type === "json" &&
+              candidate.jsonKey === card.jsonKey &&
+              candidate.answerShape === card.answerShape,
+          )
+          .map((candidate) => candidate.expectedAnswer)
+          .filter(isChoiceFriendly)
         : [];
 
     const sameTopic = sorted
@@ -1249,6 +1249,36 @@ app.get("/api/projects/:lessonId", (req, res) => {
     return res.status(404).json({ error: "Project not found" });
   }
   res.json(project);
+});
+
+/**
+ * POST /api/study/refresh
+ * Forces a full rebuild of the flashcard deck from the aws-lessons folder,
+ * bypassing the file-signature cache. Returns stats about what was loaded.
+ */
+app.post("/api/study/refresh", async (req, res) => {
+  try {
+    // Clear the cached signature so buildCardsFromAwsLessons() performs a full rescan
+    deckCache = { signature: null, cards: [] };
+
+    const cards = await buildCardsFromAwsLessons();
+
+    const subjectCounts = {};
+    cards.forEach((card) => {
+      const s = card.subjectId || "unknown";
+      subjectCounts[s] = (subjectCounts[s] || 0) + 1;
+    });
+
+    res.json({
+      success: true,
+      cardCount: cards.length,
+      subjectCounts,
+      message: `Deck rebuilt: ${cards.length} cards loaded`,
+    });
+  } catch (err) {
+    console.error("Refresh error:", err);
+    res.status(500).json({ success: false, error: err.message });
+  }
 });
 
 // Start the server
