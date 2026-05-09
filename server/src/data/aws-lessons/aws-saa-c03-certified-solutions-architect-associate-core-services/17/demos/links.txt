@@ -1,3 +1,0 @@
-# DNS Checker
-https://dnschecker.org/
-

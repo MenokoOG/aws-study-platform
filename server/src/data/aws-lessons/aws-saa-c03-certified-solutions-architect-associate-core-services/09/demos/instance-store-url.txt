@@ -1,1 +1,0 @@
-https://docs.aws.amazon.com/ec2/latest/instancetypes/gp.html#gp_instance-store

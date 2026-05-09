@@ -107,20 +107,26 @@ function getDeckSignature(files) {
 function inferTags(sourcePath, textBlob) {
   const corpus = `${sourcePath} ${textBlob}`.toLowerCase();
   const keywords = [
-    "iam",
-    "s3",
-    "ec2",
-    "vpc",
-    "route 53",
-    "cloudfront",
-    "lambda",
-    "security",
-    "cost",
-    "network",
-    "storage",
-    "resilience",
-    "dns",
-    "ssm",
+    "bedrock",
+    "sagemaker",
+    "comprehend",
+    "rekognition",
+    "textract",
+    "polly",
+    "translate",
+    "kendra",
+    "llm",
+    "rag",
+    "fine-tuning",
+    "prompt",
+    "responsible ai",
+    "bias",
+    "governance",
+    "inference",
+    "foundation model",
+    "generative ai",
+    "hallucination",
+    "guardrails",
   ];
 
   return keywords.filter((keyword) => corpus.includes(keyword));
@@ -158,7 +164,7 @@ function createCard(base, prompt, expectedAnswer, reference, type) {
 
 function humanizeSlug(slug) {
   return slug
-    .replace(/^aws-saa-c03-certified-solutions-architect-associate-/, "")
+    .replace(/^aws-aif-c01-certified-ai-practitioner-/, "")
     .replace(/-/g, " ")
     .trim();
 }

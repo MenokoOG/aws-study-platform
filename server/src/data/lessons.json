@@ -1,8 +1,8 @@
 [
   {
     "id": "lesson1",
-    "title": "Design Secure Architectures",
-    "domain": "secure",
+    "title": "Fundamentals of AI and ML",
+    "domain": "ai-ml-fundamentals",
     "objectives": [
       "Understand IAM identities (users, groups, roles, policies) and apply least‑privilege access",
       "Describe the AWS shared responsibility model and security best practices",
@@ -10,15 +10,15 @@
       "Use AWS services (KMS, ACM, Secrets Manager) to encrypt data at rest and in transit",
       "Implement multi‑account strategies (AWS Organizations, Control Tower, SCPs) and cross‑account access"
     ],
-    "description": "This lesson introduces the principles of designing secure AWS architectures.  You will learn how to create and manage identities using IAM, apply the principle of least privilege, and design authorization strategies across multiple accounts.  The lesson explains the AWS shared responsibility model and highlights services for secrets management and encryption.  You will also design secure VPC architectures using public and private subnets, security groups, network ACLs and NAT gateways.  Finally, the lesson covers encrypting data at rest with AWS KMS and in transit using certificates and TLS.",
+    "description": "This lesson covers the foundational concepts of artificial intelligence and machine learning that underpin the AIF-C01 exam. You will learn to distinguish AI, ML, and deep learning, and to classify problems by learning paradigm. The lesson walks through the ML lifecycle from raw data to deployed model, covering preprocessing, feature engineering, training, and evaluation. Key evaluation metrics (accuracy, precision, recall, F1, AUC-ROC) are introduced alongside the concepts of overfitting and underfitting. The lesson closes with guidance on recognizing when ML is the right approach versus simpler rule-based solutions.",
     "resources": [
       {
         "title": "AWS Solutions Architect – Associate Exam Guide (PDF)",
-        "url": "https://d1.awsstatic.com/training-and-certification/docs-sa-assoc/AWS-Certified-Solutions-Architect-Associate_Exam-Guide.pdf"
+        "url": "https://d1.awsstatic.com/training-and-certification/docs-ai-practitioner/AWS-Certified-AI-Practitioner_Exam-Guide.pdf"
       },
       {
-        "title": "Blue Matador AWS CLI Cheat Sheet",
-        "url": "https://www.bluematador.com/learn/aws-cli-cheatsheet"
+        "title": "AWS Machine Learning Foundations (AWS Skill Builder)",
+        "url": "https://explore.skillbuilder.aws/learn/course/external/view/elearning/27/machine-learning-foundations-non-technical"
       }
     ],
     "projectId": "project1",
@@ -27,8 +27,8 @@
   },
   {
     "id": "lesson2",
-    "title": "Design Resilient Architectures",
-    "domain": "resilient",
+    "title": "Fundamentals of Generative AI",
+    "domain": "generative-ai-fundamentals",
     "objectives": [
       "Explain microservices vs. monolithic architectures and event‑driven design",
       "Use managed services (API Gateway, SQS, SNS) to decouple components",
@@ -40,17 +40,17 @@
     "resources": [
       {
         "title": "AWS Solutions Architect – Associate Exam Guide (PDF)",
-        "url": "https://d1.awsstatic.com/training-and-certification/docs-sa-assoc/AWS-Certified-Solutions-Architect-Associate_Exam-Guide.pdf"
+        "url": "https://d1.awsstatic.com/training-and-certification/docs-ai-practitioner/AWS-Certified-AI-Practitioner_Exam-Guide.pdf"
       }
     ],
     "projectId": "project2",
     "quizId": "quiz2",
-    "projectSummary": "Build a serverless message processor using API Gateway, Lambda and SQS.  The API triggers a Lambda function that enqueues messages into SQS, and another Lambda processes them asynchronously.  Deploy across multiple availability zones and configure monitoring."
+    "projectSummary": "Use the Amazon Bedrock Playground to compare zero-shot, few-shot, and chain-of-thought prompts against a foundation model of your choice. Document how response quality changes across strategies. Then configure a Knowledge Base (RAG) backed by an S3 document and contrast grounded vs. ungrounded responses."
   },
   {
     "id": "lesson3",
-    "title": "Design High‑Performing Architectures",
-    "domain": "high-performance",
+    "title": "Foundation Model Applications with Amazon Bedrock",
+    "domain": "foundation-model-applications",
     "objectives": [
       "Select the appropriate storage service (S3, EFS, EBS) based on performance needs",
       "Choose compute options (EC2, Fargate, Lambda, Batch) for elasticity and performance",
@@ -58,11 +58,11 @@
       "Create scalable network topologies and choose load‑balancing strategies",
       "Use auto‑scaling and monitoring to meet performance objectives"
     ],
-    "description": "This lesson focuses on selecting and configuring AWS services to achieve high performance and elasticity.  You will compare object, file and block storage types and identify when to use S3, EFS or EBS.  The lesson examines compute options including EC2 instance families, container orchestration on ECS/EKS, batch processing and serverless compute.  Database choices such as Amazon Aurora, DynamoDB and ElastiCache are discussed, along with read replicas and caching strategies.  You will also design network architectures using subnets, route tables, load balancers and edge services like CloudFront and Global Accelerator.",
+    "description": "Amazon Bedrock is the primary AWS service for building generative AI applications and the most heavily tested service on AIF-C01. This lesson covers the Bedrock model catalog (Anthropic Claude, Amazon Titan, Meta Llama, Mistral, Cohere) and how to select a model based on capability, latency, cost, and context-window requirements. Bedrock Agents are introduced as the orchestration layer that lets foundation models call external APIs and query knowledge bases. Model customization options are compared: continued pre-training, supervised fine-tuning, and RAG. The lesson also covers Bedrock Guardrails for content filtering, PII detection, and topic blocking, and explains how to evaluate model quality using automated metrics and the model-as-judge pattern.",
     "resources": [
       {
         "title": "AWS Solutions Architect – Associate Exam Guide (PDF)",
-        "url": "https://d1.awsstatic.com/training-and-certification/docs-sa-assoc/AWS-Certified-Solutions-Architect-Associate_Exam-Guide.pdf"
+        "url": "https://d1.awsstatic.com/training-and-certification/docs-ai-practitioner/AWS-Certified-AI-Practitioner_Exam-Guide.pdf"
       }
     ],
     "projectId": "project3",
@@ -71,8 +71,8 @@
   },
   {
     "id": "lesson4",
-    "title": "Design Cost‑Optimized Architectures",
-    "domain": "cost-optimization",
+    "title": "Guidelines for Responsible AI",
+    "domain": "responsible-ai",
     "objectives": [
       "Use AWS cost‑management tools (Cost Explorer, Budgets, Cost and Usage Reports)",
       "Select cost‑effective storage classes and lifecycle policies",
@@ -84,11 +84,37 @@
     "resources": [
       {
         "title": "AWS Solutions Architect – Associate Exam Guide (PDF)",
-        "url": "https://d1.awsstatic.com/training-and-certification/docs-sa-assoc/AWS-Certified-Solutions-Architect-Associate_Exam-Guide.pdf"
+        "url": "https://d1.awsstatic.com/training-and-certification/docs-ai-practitioner/AWS-Certified-AI-Practitioner_Exam-Guide.pdf"
       }
     ],
     "projectId": "project4",
     "quizId": "quiz4",
-    "projectSummary": "Analyze a workload running on EC2 and S3, implement lifecycle rules to transition objects to infrequent access and Glacier, convert compute capacity to Savings Plans, and compare the cost of NAT instances versus NAT gateways.  Visualize cost impacts with Cost Explorer."
+    "projectSummary": "Use Amazon SageMaker Clarify to generate a bias report on a sample dataset. Identify at least two bias metrics (e.g., Class Imbalance, Disparate Impact), interpret what each means in context, and propose a mitigation strategy. Write a brief Model Card for a hypothetical model using AWS's Model Card template."
+  },
+  {
+    "id": "lesson5",
+    "title": "Security, Compliance, and Governance for AI",
+    "domain": "ai-security-compliance",
+    "objectives": [
+      "Apply AWS IAM least-privilege principles to AI services (Bedrock, SageMaker, Comprehend)",
+      "Understand data encryption requirements for AI workloads: at rest (KMS) and in transit (TLS)",
+      "Describe VPC isolation patterns for AI inference endpoints",
+      "Explain AWS compliance frameworks relevant to AI (GDPR, HIPAA eligibility, SOC 2)",
+      "Use AWS CloudTrail and Amazon CloudWatch to audit and monitor AI service usage"
+    ],
+    "description": "The security and governance domain (~14%) applies familiar AWS security patterns to AI-specific contexts. This lesson covers IAM policies for Bedrock and SageMaker: who can invoke models, who can create knowledge bases, and how cross-account access is controlled. Data protection requirements are reviewed: KMS encryption for training data in S3 and SageMaker feature stores, TLS for API calls to Bedrock. VPC endpoint configurations that keep inference traffic off the public internet are introduced. The lesson also covers compliance frameworks AWS customers must understand when deploying AI in regulated industries, and how CloudTrail model invocation logging and CloudWatch anomaly detection support ongoing governance.",
+    "resources": [
+      {
+        "title": "AWS Certified AI Practitioner Exam Guide (PDF)",
+        "url": "https://d1.awsstatic.com/training-and-certification/docs-ai-practitioner/AWS-Certified-AI-Practitioner_Exam-Guide.pdf"
+      },
+      {
+        "title": "Security in Amazon Bedrock (AWS Docs)",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/security.html"
+      }
+    ],
+    "projectId": "project5",
+    "quizId": "quiz5",
+    "projectSummary": "Create an IAM role with least-privilege permissions for Bedrock InvokeModel (scoped to one model ARN). Enable CloudTrail logging for Bedrock API calls, invoke the model, and verify the call appears in CloudTrail. Configure a VPC endpoint for Bedrock and confirm model invocations route through it."
   }
 ]

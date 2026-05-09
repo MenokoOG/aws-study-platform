@@ -1,1 +1,0 @@
-Hello from Pluralsight! Great job using the EC2 Instance Profile to download this object!

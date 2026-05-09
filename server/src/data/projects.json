@@ -2,8 +2,8 @@
   {
     "id": "project1",
     "lessonId": "lesson1",
-    "title": "Secure S3 and IAM",
-    "introduction": "In this project you will practice securing an Amazon S3 bucket and implementing IAM policies.  You will enable encryption, configure access policies and integrate CloudFront.",
+    "title": "SageMaker Canvas: Build Your First ML Model",
+    "introduction": "In this project you will use Amazon SageMaker Canvas to build a no-code binary classification model. You will upload a sample dataset, configure AutoML, evaluate the results, and interpret the model quality report.",
     "steps": [
       "Sign in to the AWS Management Console and create a new S3 bucket (e.g., my-secure-bucket).  Choose a unique name and your preferred region.",
       "Enable default encryption for the bucket using AWS KMS with an AWS‑managed key.",
@@ -18,8 +18,8 @@
   {
     "id": "project2",
     "lessonId": "lesson2",
-    "title": "Serverless Message Processor",
-    "introduction": "This project demonstrates how to decouple application components using serverless services.  You will build an API that queues messages and a worker function that processes them asynchronously.",
+    "title": "Bedrock Playground: Prompt Engineering Comparison",
+    "introduction": "In this project you will compare zero-shot, few-shot, and chain-of-thought prompting strategies in the Amazon Bedrock Playground. You will then configure a Bedrock Knowledge Base and contrast RAG responses with direct model responses.",
     "steps": [
       "Create an Amazon SQS queue named `MessageQueue`.  Leave the default visibility timeout or adjust as needed.",
       "Write an AWS Lambda function (`enqueueMessage`) in your preferred runtime that reads a JSON payload from the request and sends it to the SQS queue using the AWS SDK.",
@@ -50,7 +50,7 @@
   {
     "id": "project4",
     "lessonId": "lesson4",
-    "title": "Cost Optimization Challenge",
+    "title": "SageMaker Clarify: Bias Detection and Model Cards",
     "introduction": "This project focuses on applying cost‑optimization strategies to an existing workload.  You will analyze spending, implement lifecycle policies and evaluate pricing models.",
     "steps": [
       "Use AWS Cost Explorer to review the current monthly cost of your EC2 instances and S3 buckets.  Identify the most expensive resources.",
@@ -62,5 +62,21 @@
       "Clean up any experimental resources created for this project to avoid ongoing charges."
     ],
     "expectedOutcome": "You will learn how to analyze AWS spending, apply pricing models, configure lifecycle policies and make architectural decisions that minimize costs while meeting requirements.  You will also practice tagging and budgeting to maintain cost visibility."
+  },
+  {
+    "id": "project5",
+    "lessonId": "lesson5",
+    "title": "IAM, CloudTrail, and VPC Endpoint for Bedrock",
+    "introduction": "In this project you will configure least-privilege IAM access for Amazon Bedrock, enable audit logging via CloudTrail, and route inference traffic through a private VPC endpoint.",
+    "steps": [
+      "Create an IAM role named BedrockInvokeRole. Attach a custom inline policy that allows only bedrock:InvokeModel on a single model ARN (e.g., arn:aws:bedrock:us-east-1::foundation-model/anthropic.claude-v2). Deny all other Bedrock actions.",
+      "Assume the role using aws sts assume-role and use the temporary credentials to invoke the Bedrock model via the AWS CLI: aws bedrock-runtime invoke-model. Confirm it succeeds.",
+      "Attempt to call bedrock:ListFoundationModels with the same role credentials. Confirm it fails with AccessDeniedException, demonstrating least-privilege enforcement.",
+      "Enable AWS CloudTrail in your account or verify it is already on. Ensure a trail is configured to log data events for Bedrock. In the CloudTrail console, locate the InvokeModel event from step 2.",
+      "In your VPC, create a VPC endpoint for Amazon Bedrock (service name: com.amazonaws.region.bedrock-runtime). Attach an endpoint policy that allows only your BedrockInvokeRole to call InvokeModel.",
+      "Update your security group rules so that Bedrock traffic routes through the endpoint. Invoke the model again from an EC2 instance in the VPC and confirm the call succeeds without traversing the internet gateway.",
+      "Review the CloudTrail logs and confirm the request appears with your role as the caller identity. Clean up all resources when done."
+    ],
+    "expectedOutcome": "You will have configured end-to-end security for a Bedrock workload: least-privilege IAM access, full audit logging via CloudTrail, and private network routing via a VPC endpoint. This mirrors governance requirements for production AI deployments in regulated industries."
   }
 ]

@@ -5,39 +5,45 @@
     "questions": [
       {
         "id": "q1-1",
-        "question": "Which AWS service is primarily used to manage identities, permissions and access policies?",
+        "question": "Which type of machine learning uses labeled training data where the correct output is known?",
         "choices": [
-          "Amazon EC2",
-          "AWS Identity and Access Management (IAM)",
-          "AWS CloudTrail",
-          "Amazon VPC"
+          "Unsupervised learning",
+          "Reinforcement learning",
+          "Supervised learning",
+          "Self-supervised learning"
         ],
-        "answer": [1],
-        "explanation": "IAM lets you create users, groups, roles and policies to control access to AWS resources."
+        "answer": [
+          2
+        ],
+        "explanation": "Supervised learning trains on labeled examples where the correct answer is provided. The model learns to map inputs to outputs by minimizing prediction error on the known labels."
       },
       {
         "id": "q1-2",
-        "question": "In the AWS shared responsibility model, which of the following are customer responsibilities? (Choose two)",
+        "question": "What does 'overfitting' mean in a machine learning context?",
         "choices": [
-          "Configuring IAM policies correctly",
-          "Maintaining the physical security of data centers",
-          "Encrypting data stored on AWS",
-          "Operating the AWS network backbone"
+          "The model is too simple to learn patterns in the training data",
+          "The model memorizes training data including noise, and generalizes poorly to new data",
+          "The model requires too much compute to run inference",
+          "The model was trained on too little data"
         ],
-        "answer": [0, 2],
-        "explanation": "Customers are responsible for security \"in\" the cloud, including configuring IAM and encrypting their data. AWS manages physical security and the underlying network infrastructure."
+        "answer": [
+          1
+        ],
+        "explanation": "Overfitting occurs when a model learns training data too well, capturing noise and irrelevant patterns. It performs well on training data but poorly on unseen data. Regularization, more data, or a simpler model helps."
       },
       {
         "id": "q1-3",
-        "question": "Which feature can be used to control inbound and outbound traffic at the subnet level?",
+        "question": "Which AWS service provides a no-code visual interface for building ML models using AutoML without writing any code?",
         "choices": [
-          "Security groups",
-          "Network ACLs",
-          "IAM roles",
-          "AWS Key Management Service (KMS)"
+          "Amazon SageMaker Studio",
+          "Amazon SageMaker Canvas",
+          "AWS Glue DataBrew",
+          "Amazon Comprehend"
         ],
-        "answer": [1],
-        "explanation": "Network ACLs operate at the subnet level and can allow or deny specific IP ranges and protocols. Security groups act at the instance level."
+        "answer": [
+          1
+        ],
+        "explanation": "Amazon SageMaker Canvas is a no-code visual interface that lets business analysts build and deploy ML models using AutoML. SageMaker Studio is the full IDE for data scientists who write code."
       }
     ]
   },
@@ -47,27 +53,31 @@
     "questions": [
       {
         "id": "q2-1",
-        "question": "Which AWS service is commonly used to decouple components in a microservices or serverless architecture?",
+        "question": "A company wants its AI assistant to answer questions from internal documents updated daily, without retraining the model. Which approach is most appropriate?",
         "choices": [
-          "Amazon Simple Queue Service (SQS)",
-          "Amazon Simple Storage Service (S3)",
-          "Amazon DynamoDB",
-          "AWS CloudTrail"
+          "Fine-tune the foundation model on the documents weekly",
+          "Add all documents to the system prompt",
+          "Implement Retrieval-Augmented Generation (RAG) with a vector store",
+          "Switch to a larger foundation model with a bigger context window"
         ],
-        "answer": [0],
-        "explanation": "SQS is a fully managed message queuing service that enables you to decouple and scale microservices, distributed systems and serverless applications."
+        "answer": [
+          2
+        ],
+        "explanation": "RAG retrieves relevant document chunks at inference time and injects them into the prompt. This keeps knowledge current without retraining, avoids context window limits, and is the standard pattern for grounding LLMs in private data."
       },
       {
         "id": "q2-2",
-        "question": "Which scaling strategy adds additional instances of a resource rather than increasing the size of an instance?",
+        "question": "Which prompting strategy provides the model with a few worked examples of input-output pairs before presenting the actual task?",
         "choices": [
-          "Vertical scaling",
-          "Horizontal scaling",
-          "Single scaling",
-          "Elastic scaling"
+          "Zero-shot prompting",
+          "Chain-of-thought prompting",
+          "Few-shot prompting",
+          "System prompt engineering"
         ],
-        "answer": [1],
-        "explanation": "Horizontal scaling (scaling out) means adding more instances to distribute load, while vertical scaling (scaling up) increases the size of a single instance."
+        "answer": [
+          2
+        ],
+        "explanation": "Few-shot prompting includes example input-output pairs in the prompt to demonstrate the desired format or reasoning pattern. Zero-shot gives no examples. Chain-of-thought asks the model to reason step-by-step."
       },
       {
         "id": "q2-3",
@@ -78,7 +88,9 @@
           "Warm standby",
           "Multi‑site active‑active"
         ],
-        "answer": [2],
+        "answer": [
+          2
+        ],
         "explanation": "In the warm standby strategy a scaled‑down version of the environment is always running and can be scaled up to production load on demand."
       }
     ]
@@ -89,27 +101,31 @@
     "questions": [
       {
         "id": "q3-1",
-        "question": "Which AWS storage service provides highly scalable object storage with 11 nines (99.999999999%) durability?",
+        "question": "Which Amazon Bedrock feature enables a foundation model to autonomously call external APIs and query knowledge bases to complete multi-step tasks?",
         "choices": [
-          "Amazon Elastic File System (EFS)",
-          "Amazon Elastic Block Store (EBS)",
-          "Amazon Simple Storage Service (S3)",
-          "Amazon S3 Glacier"
+          "Bedrock Guardrails",
+          "Bedrock Agents",
+          "Bedrock Model Evaluation",
+          "Bedrock Fine-tuning"
         ],
-        "answer": [2],
-        "explanation": "Amazon S3 offers 11 nines of durability by automatically storing objects across multiple devices and facilities."
+        "answer": [
+          1
+        ],
+        "explanation": "Bedrock Agents orchestrate multi-step workflows by letting foundation models invoke action groups (external APIs) and retrieve from knowledge bases. Guardrails handle content filtering, not agentic tool use."
       },
       {
         "id": "q3-2",
-        "question": "For unpredictable and spiky workloads with variable request rates, which compute service offers automatic scaling without provisioning or managing servers?",
+        "question": "An organization needs fast responses for real-time customer chat, even if response quality is slightly lower. Which model selection factor matters most?",
         "choices": [
-          "Amazon EC2 Auto Scaling",
-          "AWS Lambda",
-          "Amazon Lightsail",
-          "AWS Batch"
+          "Context window size",
+          "Inference latency and throughput",
+          "Fine-tuning dataset support",
+          "Number of supported languages"
         ],
-        "answer": [1],
-        "explanation": "AWS Lambda lets you run code without provisioning or managing servers and automatically scales based on the number of incoming requests."
+        "answer": [
+          1
+        ],
+        "explanation": "For real-time use cases, inference latency (time to first token) and throughput are the primary selection criteria. Smaller, faster models are often preferred over larger models for low-latency chat."
       },
       {
         "id": "q3-3",
@@ -120,7 +136,9 @@
           "Amazon DynamoDB",
           "Amazon Redshift"
         ],
-        "answer": [2],
+        "answer": [
+          2
+        ],
         "explanation": "Amazon DynamoDB is a fully managed NoSQL database that provides single‑digit millisecond latency at any scale and supports both key‑value and document data models."
       }
     ]
@@ -138,7 +156,9 @@
           "Savings Plans",
           "On‑Demand Instances"
         ],
-        "answer": [0],
+        "answer": [
+          0
+        ],
         "explanation": "Reserved Instances provide a significant discount compared with On‑Demand pricing when you commit to a one‑ or three‑year term."
       },
       {
@@ -150,20 +170,72 @@
           "S3 Glacier Deep Archive",
           "S3 One Zone‑IA"
         ],
-        "answer": [2],
+        "answer": [
+          2
+        ],
         "explanation": "S3 Glacier Deep Archive is designed for long‑term archival of infrequently accessed data at the lowest cost, but retrieval times are typically measured in hours."
       },
       {
         "id": "q4-3",
-        "question": "Which AWS tool can help you visualize and analyze your spending patterns over time?",
+        "question": "Which Amazon SageMaker feature analyzes ML datasets and models to detect potential bias and generates a visual bias report?",
         "choices": [
-          "AWS CloudFormation",
-          "AWS Budgets",
-          "AWS Cost Explorer",
-          "AWS Trusted Advisor"
+          "SageMaker Debugger",
+          "SageMaker Clarify",
+          "SageMaker Monitor",
+          "SageMaker Feature Store"
         ],
-        "answer": [2],
-        "explanation": "AWS Cost Explorer provides interactive dashboards and reports that help you understand and forecast your AWS costs."
+        "answer": [
+          1
+        ],
+        "explanation": "Amazon SageMaker Clarify detects potential bias in training data and model predictions, and generates bias reports with metrics such as Class Imbalance and Disparate Impact. It also provides SHAP-based feature attribution for explainability."
+      }
+    ]
+  },
+  {
+    "id": "quiz5",
+    "lessonId": "lesson5",
+    "questions": [
+      {
+        "id": "q5-1",
+        "question": "Which AWS service records all API calls to Amazon Bedrock, providing an audit trail of who invoked a model, when, and with what parameters?",
+        "choices": [
+          "Amazon CloudWatch",
+          "AWS Config",
+          "AWS CloudTrail",
+          "Amazon GuardDuty"
+        ],
+        "answer": [
+          2
+        ],
+        "explanation": "AWS CloudTrail logs all management and data plane API calls. For Bedrock, enabling CloudTrail model invocation logging records who called InvokeModel, when, and which model was used."
+      },
+      {
+        "id": "q5-2",
+        "question": "To ensure Amazon Bedrock inference traffic never traverses the public internet, which networking feature should you configure?",
+        "choices": [
+          "Amazon CloudFront distribution",
+          "VPC endpoint using AWS PrivateLink",
+          "AWS WAF rule for Bedrock",
+          "Bedrock Guardrails with network filter"
+        ],
+        "answer": [
+          1
+        ],
+        "explanation": "A VPC endpoint (powered by AWS PrivateLink) creates a private connection from your VPC to Amazon Bedrock, so inference traffic stays within the AWS network and never touches the public internet."
+      },
+      {
+        "id": "q5-3",
+        "question": "When writing an IAM policy to restrict an application to invoke only one specific Amazon Bedrock foundation model, which element enforces the restriction?",
+        "choices": [
+          "The Condition block with a StringEquals on model name",
+          "The Action set to bedrock:GetModel",
+          "The Resource field set to the model ARN",
+          "The Principal field set to the model provider"
+        ],
+        "answer": [
+          2
+        ],
+        "explanation": "In IAM, the Resource field specifies the ARN of the resource the action applies to. Setting the Resource to a specific Bedrock model ARN (e.g., arn:aws:bedrock:us-east-1::foundation-model/anthropic.claude-v2) enforces least-privilege access to that model only."
       }
     ]
   }
