@@ -6,7 +6,7 @@ const USER_KEY = "aws-study-user-id";
 function getUserId() {
   const existing = localStorage.getItem(USER_KEY);
   if (existing) return existing;
-  const generated = `learner-${Math.random().toString(36).slice(2, 10)}`;
+  const generated = `learner-${crypto.randomUUID()}`;
   localStorage.setItem(USER_KEY, generated);
   return generated;
 }

@@ -3,7 +3,7 @@ const cors = require("cors");
 const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
-const { PDFParse } = require("pdf-parse");
+const pdfParse = require("pdf-parse");
 require("dotenv").config({
   path: path.join(__dirname, "..", ".env"),
 });
@@ -28,9 +28,26 @@ let deckCache = {
   cards: [],
 };
 
-// Enable CORS for all origins (for local development)
-app.use(cors());
-app.use(express.json());
+// Restrict CORS to localhost origins for local development
+const ALLOWED_ORIGINS = [
+  "http://localhost:5173",
+  "http://localhost:3000",
+  "http://127.0.0.1:5173",
+  "http://127.0.0.1:3000",
+];
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      // Allow requests with no origin (e.g. same-origin, curl, Postman)
+      if (!origin || ALLOWED_ORIGINS.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("CORS: origin not allowed"));
+      }
+    },
+  }),
+);
+app.use(express.json({ limit: "64kb" }));
 
 function ensureDirectory(dirPath) {
   if (!fs.existsSync(dirPath)) {
@@ -39,7 +56,7 @@ function ensureDirectory(dirPath) {
 }
 
 function hashId(value) {
-  return crypto.createHash("sha1").update(value).digest("hex").slice(0, 12);
+  return crypto.createHash("sha256").update(value).digest("hex").slice(0, 12);
 }
 
 function safeReadJson(filePath, fallbackValue) {
@@ -589,8 +606,7 @@ async function buildCardsFromAwsLessons() {
     try {
       if (pdfExtensions.has(extension)) {
         const pdfBuffer = fs.readFileSync(filePath);
-        const parser = new PDFParse({ data: pdfBuffer });
-        const pdfResult = await parser.getText();
+        const pdfResult = await pdfParse(pdfBuffer);
         const rawContent = pdfResult.text || "";
         const textBlob = rawContent.slice(0, 8000);
         baseMeta.tags = inferTags(sourcePath, textBlob);
@@ -1009,10 +1025,10 @@ app.post("/api/study/answer", async (req, res) => {
   const userState = getUserProgress(userId);
   const { cardId, choiceIndex, subject, queue } = req.body;
 
-  if (!cardId || typeof choiceIndex !== "number") {
+  if (!cardId || typeof choiceIndex !== "number" || !Number.isInteger(choiceIndex) || choiceIndex < 0) {
     return res
       .status(400)
-      .json({ error: "cardId and numeric choiceIndex are required." });
+      .json({ error: "cardId and non-negative integer choiceIndex are required." });
   }
 
   const card = cards.find((candidate) => candidate.id === cardId);
@@ -1028,6 +1044,10 @@ app.post("/api/study/answer", async (req, res) => {
     input: { cardId, choiceIndex },
     output: { correct },
   });
+  // Cap history to prevent unbounded file growth
+  if (userState.history.length > 500) {
+    userState.history = userState.history.slice(-500);
+  }
 
   saveProgressStore();
 
@@ -1080,6 +1100,9 @@ app.post("/api/study/note", (req, res) => {
 
   if (!text || typeof text !== "string") {
     return res.status(400).json({ error: "Note text is required." });
+  }
+  if (text.length > 2000) {
+    return res.status(400).json({ error: "Note text must be 2000 characters or fewer." });
   }
 
   const note = {
