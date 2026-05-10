@@ -1,6 +1,6 @@
-# AWS Solutions Architect Study Platform
+# AWS AI Practitioner Study Platform
 
-This repository now contains a mobile-first flashcard mastery companion for the **AWS Certified Solutions Architect - Associate** exam. The app continuously adapts to your local course files in `server/src/data/aws-lessons` and repeats missed cards until you get them right.
+This repository contains a mobile-first flashcard mastery companion for the **AWS Certified AI Practitioner (AIF-C01)** exam. The app continuously adapts to your local course files in `server/src/data/aws-lessons` and repeats missed cards until you get them right.
 
 ## Features
 
@@ -49,6 +49,7 @@ This repository now contains a mobile-first flashcard mastery companion for the 
    ```sh
    OPENAI_API_KEY="your_openai_api_key"
    OPENAI_MODEL="gpt-4.1-mini"
+   PORT=3000
    ```
 
 4. Start the server (by default on port 3000):
@@ -98,10 +99,11 @@ The build output will be placed in `client/dist`. You can configure your back‑
 
 ## Study Data Flow
 
-1. Drop new files into `server/src/data/aws-lessons`.
+1. Drop new files into `server/src/data/aws-lessons/aws-aif-c01-certified-ai-practitioner-{topic}/`.
 2. Start or refresh the app.
 3. The server regenerates cards from supported text-like files (`.txt`, `.json`, `.sh`, `.py`, `.js`, `.html`, `.rtf`, `.md`) and merges them with exam-critical anchors from `quizzes.json`.
 4. Binary course files (`.pdf`, `.png`, `.zip`, etc.) are safely skipped.
+5. Folder names are auto-humanized into subject labels (e.g., `core-services` → **Core Services**).
 
 Progress and note memory is persisted to `server/src/data/progress-memory.json`.
 

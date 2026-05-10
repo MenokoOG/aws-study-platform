@@ -165,6 +165,7 @@ function createCard(base, prompt, expectedAnswer, reference, type) {
 function humanizeSlug(slug) {
   return slug
     .replace(/^aws-aif-c01-certified-ai-practitioner-/, "")
+    .replace(/^aws-certified-ai-practitioner-/, "")
     .replace(/-/g, " ")
     .trim();
 }
@@ -190,6 +191,24 @@ function getCardSubject(card) {
         .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
         .join(" "),
     };
+  }
+
+  // Fallback: check if sourcePath contains the data dir directly
+  const dataMarker = "server/src/data/";
+  if (typeof card.sourcePath === "string" && card.sourcePath.includes(dataMarker)) {
+    const rest = card.sourcePath.slice(
+      card.sourcePath.indexOf(dataMarker) + dataMarker.length,
+    );
+    const segment = rest.split("/")[0] || "general";
+    if (!["lessons.json", "quizzes.json", "projects.json", "progress-memory.json"].includes(segment)) {
+      return {
+        id: segment,
+        label: humanizeSlug(segment)
+          .split(" ")
+          .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+          .join(" "),
+      };
+    }
   }
 
   const fallback = (card.topic || "general").toLowerCase().replace(/\s+/g, "-");
@@ -526,13 +545,11 @@ function createFallbackCard(filePath) {
 }
 
 function buildCardsFromAwsLessons() {
-  if (!fs.existsSync(AWS_LESSONS_DIR)) {
-    return [];
-  }
-
-  const files = collectFiles(AWS_LESSONS_DIR).filter(
-    (filePath) => !filePath.endsWith(".DS_Store"),
-  );
+  const files = fs.existsSync(AWS_LESSONS_DIR)
+    ? collectFiles(AWS_LESSONS_DIR).filter(
+      (filePath) => !filePath.endsWith(".DS_Store"),
+    )
+    : [];
   const signature = getDeckSignature(files);
 
   if (deckCache.signature === signature) {

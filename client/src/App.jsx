@@ -36,6 +36,10 @@ function App() {
   const [tutorLoading, setTutorLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [refreshResult, setRefreshResult] = useState("");
+  const [darkMode, setDarkMode] = useState(() => {
+    const stored = localStorage.getItem("darkMode");
+    return stored === null ? true : stored === "true";
+  });
 
   const headers = useMemo(() => ({ "x-user-id": userId }), [userId]);
 
@@ -130,6 +134,11 @@ function App() {
   useEffect(() => {
     loadSession("all", "all-due", true);
   }, []);
+
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark", darkMode);
+    localStorage.setItem("darkMode", String(darkMode));
+  }, [darkMode]);
 
   const loadProgressSummary = async (nextSubject = subjectId) => {
     try {
@@ -310,31 +319,40 @@ function App() {
   const masteryPercent = stats?.masteryPercent || 0;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-orange-50 via-amber-50 to-white font-body text-slate-900">
+    <div className="min-h-screen bg-gradient-to-b from-orange-50 via-amber-50 to-white font-body text-slate-900 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 dark:text-slate-100">
       <div className="pointer-events-none fixed inset-0 overflow-hidden">
-        <div className="absolute -left-16 -top-24 h-56 w-56 rounded-full bg-orange-300/35 blur-3xl" />
-        <div className="absolute -right-20 top-1/4 h-64 w-64 rounded-full bg-cyan-200/35 blur-3xl" />
-        <div className="absolute bottom-0 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-amber-200/40 blur-3xl" />
+        <div className="absolute -left-16 -top-24 h-56 w-56 rounded-full bg-orange-300/35 blur-3xl dark:bg-orange-900/15" />
+        <div className="absolute -right-20 top-1/4 h-64 w-64 rounded-full bg-cyan-200/35 blur-3xl dark:bg-cyan-900/15" />
+        <div className="absolute bottom-0 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-amber-200/40 blur-3xl dark:bg-amber-900/15" />
       </div>
 
       <main className="relative mx-auto w-full max-w-3xl px-4 pb-24 pt-6 sm:px-6">
-        <header className="animate-floatIn rounded-3xl border border-orange-200/80 bg-white/85 p-5 shadow-aura backdrop-blur">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-orange-600">
-            AWS SAA Companion
-          </p>
-          <h1 className="mt-2 font-display text-3xl leading-tight text-slate-900">
-            Mastery Flashcards
+        <header className="animate-floatIn rounded-3xl border border-orange-200/80 bg-white/85 p-5 shadow-aura backdrop-blur dark:border-slate-700/80 dark:bg-slate-800/85">
+          <div className="flex items-center justify-between">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-orange-600 dark:text-orange-400">
+              AWS AIF-C01 Companion
+            </p>
+            <button
+              className="rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-600 transition hover:bg-slate-50 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600"
+              onClick={() => setDarkMode((prev) => !prev)}
+              aria-label="Toggle dark mode"
+            >
+              {darkMode ? "☀ Light" : "☾ Dark"}
+            </button>
+          </div>
+          <h1 className="mt-2 font-display text-3xl leading-tight text-slate-900 dark:text-slate-100">
+            AI Practitioner Flashcards
           </h1>
-          <p className="mt-2 text-sm text-slate-700">
+          <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">
             Focus mode: every missed card loops back until you own it. Built for
             calm, repeatable progress.
           </p>
 
           <div className="mt-4 grid gap-3 sm:grid-cols-[1fr_1fr_auto] sm:items-end">
-            <label className="block text-xs font-semibold uppercase tracking-[0.18em] text-slate-600">
+            <label className="block text-xs font-semibold uppercase tracking-[0.18em] text-slate-600 dark:text-slate-400">
               Subject Area
               <select
-                className="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-800 outline-none ring-orange-300 focus:ring"
+                className="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-800 outline-none ring-orange-300 focus:ring dark:border-slate-600 dark:bg-slate-700 dark:text-slate-200"
                 value={subjectId}
                 onChange={handleSubjectChange}
               >
@@ -357,10 +375,10 @@ function App() {
               </select>
             </label>
 
-            <label className="block text-xs font-semibold uppercase tracking-[0.18em] text-slate-600">
+            <label className="block text-xs font-semibold uppercase tracking-[0.18em] text-slate-600 dark:text-slate-400">
               Card Queue
               <select
-                className="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-800 outline-none ring-orange-300 focus:ring"
+                className="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-800 outline-none ring-orange-300 focus:ring dark:border-slate-600 dark:bg-slate-700 dark:text-slate-200"
                 value={queueId}
                 onChange={handleQueueChange}
               >
@@ -383,33 +401,33 @@ function App() {
 
             <div className="flex items-center gap-2">
               <button
-                className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-700 transition hover:bg-slate-50 disabled:opacity-40"
+                className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-700 transition hover:bg-slate-50 disabled:opacity-40 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600"
                 disabled={historyState.index <= 0}
                 onClick={goToPreviousCard}
               >
                 Back
               </button>
               <button
-                className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-700 transition hover:bg-slate-50 disabled:opacity-40"
+                className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-700 transition hover:bg-slate-50 disabled:opacity-40 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600"
                 disabled={!card}
                 onClick={goToNextCard}
               >
                 Forward
               </button>
               <button
-                className="rounded-xl border border-amber-300 bg-amber-50 px-3 py-2 text-xs font-semibold text-amber-700 transition hover:bg-amber-100"
+                className="rounded-xl border border-amber-300 bg-amber-50 px-3 py-2 text-xs font-semibold text-amber-700 transition hover:bg-amber-100 dark:border-amber-700 dark:bg-amber-900/30 dark:text-amber-400 dark:hover:bg-amber-900/50"
                 onClick={() => resetTracking("subject")}
               >
                 Reset Subject
               </button>
               <button
-                className="rounded-xl border border-rose-300 bg-rose-50 px-3 py-2 text-xs font-semibold text-rose-700 transition hover:bg-rose-100"
+                className="rounded-xl border border-rose-300 bg-rose-50 px-3 py-2 text-xs font-semibold text-rose-700 transition hover:bg-rose-100 dark:border-rose-700 dark:bg-rose-900/30 dark:text-rose-400 dark:hover:bg-rose-900/50"
                 onClick={() => resetTracking("all")}
               >
                 Reset Everything
               </button>
               <button
-                className="rounded-xl border border-emerald-300 bg-emerald-50 px-3 py-2 text-xs font-semibold text-emerald-700 transition hover:bg-emerald-100 disabled:opacity-40"
+                className="rounded-xl border border-emerald-300 bg-emerald-50 px-3 py-2 text-xs font-semibold text-emerald-700 transition hover:bg-emerald-100 disabled:opacity-40 dark:border-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 dark:hover:bg-emerald-900/50"
                 disabled={refreshing || loading}
                 onClick={refreshMaterial}
               >
@@ -463,25 +481,25 @@ function App() {
             </div>
           )}
 
-          <div className="mt-4 rounded-2xl border border-slate-200 bg-slate-50 p-4">
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-600">
+          <div className="mt-4 rounded-2xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800/50">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-600 dark:text-slate-400">
               Session Summary
             </p>
 
             <div className="mt-3 grid gap-3 sm:grid-cols-3">
-              <div className="rounded-xl border border-slate-200 bg-white p-3">
-                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
+              <div className="rounded-xl border border-slate-200 bg-white p-3 dark:border-slate-700 dark:bg-slate-700">
+                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">
                   Most Missed Subject
                 </p>
-                <p className="mt-2 text-sm font-semibold text-slate-800">
+                <p className="mt-2 text-sm font-semibold text-slate-800 dark:text-slate-200">
                   {progressSummary.topStrugglingSubject
                     ? `${progressSummary.topStrugglingSubject.label} (${progressSummary.topStrugglingSubject.mistakes})`
                     : "No misses yet"}
                 </p>
               </div>
 
-              <div className="rounded-xl border border-slate-200 bg-white p-3 sm:col-span-2">
-                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
+              <div className="rounded-xl border border-slate-200 bg-white p-3 sm:col-span-2 dark:border-slate-700 dark:bg-slate-700">
+                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">
                   Last 10 Trend
                 </p>
                 <div className="mt-2 flex flex-wrap gap-2">
@@ -490,8 +508,8 @@ function App() {
                       <span
                         key={`${item}-${idx}`}
                         className={`rounded-full px-2 py-1 text-xs font-semibold ${item === "correct"
-                            ? "bg-emerald-100 text-emerald-700"
-                            : "bg-rose-100 text-rose-700"
+                          ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400"
+                          : "bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-400"
                           }`}
                       >
                         {item === "correct" ? "R" : "W"}
@@ -506,13 +524,13 @@ function App() {
               </div>
             </div>
 
-            <div className="mt-3 rounded-xl border border-slate-200 bg-white p-3">
+            <div className="mt-3 rounded-xl border border-slate-200 bg-white p-3 dark:border-slate-700 dark:bg-slate-700">
               <div className="flex items-center justify-between gap-3">
-                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
+                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">
                   Last 10 Answers
                 </p>
                 <button
-                  className="rounded-lg border border-slate-300 bg-white px-2 py-1 text-[11px] font-semibold text-slate-700 transition hover:bg-slate-50"
+                  className="rounded-lg border border-slate-300 bg-white px-2 py-1 text-[11px] font-semibold text-slate-700 transition hover:bg-slate-50 dark:border-slate-600 dark:bg-slate-600 dark:text-slate-300 dark:hover:bg-slate-500"
                   onClick={() => setIsHistoryCollapsed((prev) => !prev)}
                 >
                   {isHistoryCollapsed ? "Show" : "Hide"}
@@ -525,13 +543,13 @@ function App() {
                     progressSummary.recentAnswers.map((entry, idx) => (
                       <div
                         key={`${entry.cardId}-${entry.timestamp}-${idx}`}
-                        className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2"
+                        className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 dark:border-slate-600 dark:bg-slate-600/50"
                       >
-                        <p className="text-xs font-medium text-slate-600">
+                        <p className="text-xs font-medium text-slate-600 dark:text-slate-400">
                           {entry.subjectLabel} •{" "}
                           {entry.correct ? "Right" : "Wrong"}
                         </p>
-                        <p className="mt-1 line-clamp-2 text-sm text-slate-800">
+                        <p className="mt-1 line-clamp-2 text-sm text-slate-800 dark:text-slate-200">
                           {entry.prompt}
                         </p>
                       </div>
@@ -545,8 +563,8 @@ function App() {
           </div>
         </header>
 
-        <section className="mt-5 animate-floatIn rounded-3xl border border-amber-200/80 bg-white/90 p-4 shadow-lg backdrop-blur sm:p-6">
-          <div className="mb-4 h-2 w-full overflow-hidden rounded-full bg-amber-100">
+        <section className="mt-5 animate-floatIn rounded-3xl border border-amber-200/80 bg-white/90 p-4 shadow-lg backdrop-blur sm:p-6 dark:border-slate-700/80 dark:bg-slate-800/90">
+          <div className="mb-4 h-2 w-full overflow-hidden rounded-full bg-amber-100 dark:bg-slate-700">
             <div
               className="h-full rounded-full bg-gradient-to-r from-orange-500 to-amber-400 transition-all duration-500"
               style={{ width: `${masteryPercent}%` }}
@@ -554,20 +572,20 @@ function App() {
           </div>
 
           {loading && (
-            <p className="text-sm text-slate-600">Preparing your deck...</p>
+            <p className="text-sm text-slate-600 dark:text-slate-400">Preparing your deck...</p>
           )}
           {!loading && error && (
-            <p className="rounded-xl bg-rose-50 p-3 text-sm text-rose-700">
+            <p className="rounded-xl bg-rose-50 p-3 text-sm text-rose-700 dark:bg-rose-900/30 dark:text-rose-400">
               {error}
             </p>
           )}
 
           {!loading && !error && !card && (
-            <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-5">
-              <h2 className="font-display text-xl text-emerald-800">
+            <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-5 dark:border-emerald-800 dark:bg-emerald-900/20">
+              <h2 className="font-display text-xl text-emerald-800 dark:text-emerald-300">
                 Session complete
               </h2>
-              <p className="mt-2 text-sm text-emerald-700">
+              <p className="mt-2 text-sm text-emerald-700 dark:text-emerald-400">
                 You mastered every currently generated card. Add new files to
                 aws-lessons, then refresh this session.
               </p>
@@ -582,15 +600,15 @@ function App() {
 
           {!loading && !error && card && (
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-amber-700">
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-amber-700 dark:text-amber-400">
                 {card.topic}
               </p>
               {card.subjectLabel && (
-                <p className="mt-1 text-xs font-medium text-slate-500">
+                <p className="mt-1 text-xs font-medium text-slate-500 dark:text-slate-400">
                   Subject: {card.subjectLabel}
                 </p>
               )}
-              <h2 className="mt-2 font-display text-2xl leading-tight text-slate-900">
+              <h2 className="mt-2 font-display text-2xl leading-tight text-slate-900 dark:text-slate-100">
                 {card.prompt}
               </h2>
 
@@ -601,8 +619,8 @@ function App() {
                     <button
                       key={`${card.id}-${index}`}
                       className={`w-full rounded-2xl border px-4 py-3 text-left text-sm transition ${selected
-                          ? "border-orange-500 bg-orange-100 text-slate-900"
-                          : "border-slate-200 bg-white hover:border-orange-300 hover:bg-orange-50"
+                        ? "border-orange-500 bg-orange-100 text-slate-900 dark:border-orange-400 dark:bg-orange-900/40 dark:text-slate-100"
+                        : "border-slate-200 bg-white hover:border-orange-300 hover:bg-orange-50 dark:border-slate-600 dark:bg-slate-700 dark:hover:border-orange-700 dark:hover:bg-orange-900/20 dark:text-slate-200"
                         }`}
                       onClick={() => setSelectedChoice(index)}
                     >
@@ -613,7 +631,7 @@ function App() {
               </div>
 
               <button
-                className="mt-5 w-full rounded-2xl bg-slate-900 px-5 py-3 text-sm font-semibold text-white transition enabled:hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-40"
+                className="mt-5 w-full rounded-2xl bg-slate-900 px-5 py-3 text-sm font-semibold text-white transition enabled:hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-40 dark:bg-slate-600 dark:enabled:hover:bg-slate-500"
                 disabled={selectedChoice === null}
                 onClick={submitAnswer}
               >
@@ -624,39 +642,39 @@ function App() {
         </section>
 
         {feedback && (
-          <section className="mt-5 animate-floatIn space-y-4 rounded-3xl border border-slate-200 bg-white/95 p-4 shadow-lg sm:p-6">
+          <section className="mt-5 animate-floatIn space-y-4 rounded-3xl border border-slate-200 bg-white/95 p-4 shadow-lg sm:p-6 dark:border-slate-700 dark:bg-slate-800/95">
             <div
-              className={`rounded-2xl p-4 ${feedback.correct ? "bg-emerald-50" : "bg-rose-50"}`}
+              className={`rounded-2xl p-4 ${feedback.correct ? "bg-emerald-50 dark:bg-emerald-900/30" : "bg-rose-50 dark:bg-rose-900/30"}`}
             >
               <p
-                className={`text-sm font-semibold ${feedback.correct ? "text-emerald-700" : "text-rose-700"}`}
+                className={`text-sm font-semibold ${feedback.correct ? "text-emerald-700 dark:text-emerald-400" : "text-rose-700 dark:text-rose-400"}`}
               >
                 {feedback.correct
                   ? "Correct. Great work."
                   : "Not quite yet. You will see this card again."}
               </p>
-              <p className="mt-2 text-sm text-slate-700">
+              <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">
                 <span className="font-semibold">Answer:</span>{" "}
                 {feedback.expectedAnswer}
               </p>
-              <p className="mt-2 text-sm text-slate-700">
+              <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">
                 <span className="font-semibold">Reference:</span>{" "}
                 {feedback.reference}
               </p>
               {feedback.sourcePath && (
-                <p className="mt-2 break-all text-xs text-slate-500">
+                <p className="mt-2 break-all text-xs text-slate-500 dark:text-slate-400">
                   Source: {feedback.sourcePath}
                 </p>
               )}
-              <p className="mt-2 text-xs text-slate-500">
+              <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
                 Current streak on this card: {feedback.streak}
               </p>
             </div>
 
             {!feedback.correct && (
-              <div className="rounded-2xl border border-orange-200 bg-orange-50 p-4">
+              <div className="rounded-2xl border border-orange-200 bg-orange-50 p-4 dark:border-orange-800 dark:bg-orange-900/20">
                 <div className="flex items-center justify-between gap-3">
-                  <p className="text-sm font-semibold text-orange-700">
+                  <p className="text-sm font-semibold text-orange-700 dark:text-orange-400">
                     Need a calmer explanation?
                   </p>
                   <button
@@ -668,19 +686,19 @@ function App() {
                   </button>
                 </div>
                 {tutorReply && (
-                  <p className="mt-3 whitespace-pre-wrap text-sm text-slate-700">
+                  <p className="mt-3 whitespace-pre-wrap text-sm text-slate-700 dark:text-slate-300">
                     {tutorReply}
                   </p>
                 )}
               </div>
             )}
 
-            <div className="rounded-2xl border border-cyan-200 bg-cyan-50 p-4">
-              <p className="text-sm font-semibold text-cyan-800">
+            <div className="rounded-2xl border border-cyan-200 bg-cyan-50 p-4 dark:border-cyan-800 dark:bg-cyan-900/20">
+              <p className="text-sm font-semibold text-cyan-800 dark:text-cyan-300">
                 Quick personal note
               </p>
               <textarea
-                className="mt-2 min-h-[96px] w-full rounded-xl border border-cyan-200 bg-white p-3 text-sm text-slate-900 outline-none ring-orange-300 transition focus:ring"
+                className="mt-2 min-h-[96px] w-full rounded-xl border border-cyan-200 bg-white p-3 text-sm text-slate-900 outline-none ring-orange-300 transition focus:ring dark:border-cyan-700 dark:bg-slate-700 dark:text-slate-100"
                 placeholder="Write your own memory anchor for this topic..."
                 value={noteText}
                 onChange={(event) => setNoteText(event.target.value)}
@@ -692,7 +710,7 @@ function App() {
                 >
                   Save note
                 </button>
-                <span className="text-xs text-cyan-800">{noteStatus}</span>
+                <span className="text-xs text-cyan-800 dark:text-cyan-300">{noteStatus}</span>
               </div>
             </div>
           </section>
@@ -706,8 +724,8 @@ function StatChip({ label, value, accent = false }) {
   return (
     <div
       className={`rounded-xl border px-3 py-2 ${accent
-          ? "border-orange-300 bg-orange-100 text-orange-800"
-          : "border-slate-200 bg-slate-50 text-slate-700"
+        ? "border-orange-300 bg-orange-100 text-orange-800 dark:border-orange-700 dark:bg-orange-900/40 dark:text-orange-300"
+        : "border-slate-200 bg-slate-50 text-slate-700 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-300"
         }`}
     >
       <p className="text-[11px] uppercase tracking-[0.18em]">{label}</p>
