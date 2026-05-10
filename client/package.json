@@ -2,7 +2,7 @@
   "name": "aws-study-platform-client",
   "version": "1.0.0",
   "private": true,
-  "description": "Front-end application for the AWS Solutions Architect study platform",
+  "description": "Front-end application for the AWS AIF-C01 AI Practitioner study platform",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

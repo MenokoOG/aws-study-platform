@@ -1,7 +1,7 @@
 {
   "name": "aws-study-platform-server",
   "version": "1.0.0",
-  "description": "Back-end API for the AWS Solutions Architect study platform",
+  "description": "Back-end API for the AWS AIF-C01 AI Practitioner study platform",
   "main": "src/index.js",
   "type": "commonjs",
   "scripts": {
@@ -11,7 +11,8 @@
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^17.4.2",
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "pdf-parse": "^2.4.5"
   },
   "devDependencies": {
     "nodemon": "^3.1.14"

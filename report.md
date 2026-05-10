@@ -1,100 +1,148 @@
-# AWS Solutions Architect Study Platform: Research and Application Overview
+# AWS AIF-C01 AI Practitioner Study Platform: Research and Application Overview
 
-## Overview of the AWS Certified Solutions Architect – Associate (SAA‑C03) Exam
+## Overview of the AWS Certified AI Practitioner (AIF‑C01) Exam
 
-The AWS Certified Solutions Architect – Associate exam validates a candidate’s ability to design AWS solutions that follow the Well‑Architected Framework.  According to the official exam guide, the exam assesses whether a candidate can **design architectures that are secure, resilient, high‑performing and cost‑optimized**【506934707838674†L92-L97】.  Candidates should have at least one year of hands‑on experience designing cloud solutions and be able to design solutions that use AWS services to meet current and future business requirements【506934707838674†L9-L14】.  The exam contains 50 scored questions and 15 unscored questions.  Questions are a mix of multiple‑choice and multiple‑response, and the minimum passing scaled score is **720**【506934707838674†L25-L60】.
+The AWS Certified AI Practitioner exam validates a candidate's ability to understand and apply artificial intelligence, machine learning, and generative AI concepts and use cases on AWS.  The exam is intended for individuals in AI/ML-adjacent roles — such as business analysts, project managers, developers, and cloud practitioners — who work with AI solutions but may not build models themselves.  Candidates should be familiar with foundational AI/ML terminology, the AWS AI/ML service portfolio, responsible AI principles, and the basics of generative AI including foundation models and prompt engineering.  The exam contains **65 scored questions and 20 unscored questions** (85 total).  Questions are a mix of multiple‑choice and multiple‑response, and the minimum passing scaled score is **700**.
+
 
 ### Domain weighting
 
-The exam content is divided into four domains【506934707838674†L92-L97】:
+The exam is divided into five domains:
 
 | Domain | % of score | Focus |
-|------|-------------|------|
-| **Domain 1 – Design Secure Architectures** | 30 % | Designing secure access to AWS resources, secure workloads/applications, and appropriate data‑security controls【506934707838674†L92-L97】. |
-| **Domain 2 – Design Resilient Architectures** | 26 % | Building scalable, loosely coupled, highly available and fault‑tolerant architectures using AWS managed services, event‑driven patterns, microservices and DR strategies【506934707838674†L163-L190】. |
-| **Domain 3 – Design High‑Performing Architectures** | 24 % | Selecting high‑performance storage, compute, database and network solutions to meet performance and scalability requirements【506934707838674†L248-L333】. |
-| **Domain 4 – Design Cost‑Optimized Architectures** | 20 % | Designing storage, compute, database and network architectures that minimize cost while meeting requirements【506934707838674†L362-L401】. |
+|---|---|---|
+| **Domain 1 - Fundamentals of AI and ML** | 20% | Core AI/ML concepts, terminology, model types, training/inference, ML pipeline stages, and appropriate use cases for AI on AWS. |
+| **Domain 2 - Fundamentals of Generative AI** | 24% | Foundation models (FMs), large language models (LLMs), tokens, embeddings, prompt engineering, inference parameters, and the generative AI development lifecycle. |
+| **Domain 3 - Applications of Foundation Models** | 28% | Model selection, customization techniques (fine-tuning, RAG, prompt engineering), Amazon Bedrock, AI Agents, Knowledge Bases, evaluation, and deployment patterns. |
+| **Domain 4 - Guidelines for Responsible AI** | 14% | Bias and fairness, explainability, transparency, human oversight, social and ethical considerations, and AWS tools for responsible AI. |
+| **Domain 5 - Security, Compliance, and Governance for AI Solutions** | 14% | IAM for AI services, data privacy, regulatory compliance, Amazon Bedrock Guardrails, and governance frameworks for AI workloads. |
 
 ### Key tasks and knowledge areas
 
-Below is a condensed summary of the tasks and knowledge statements highlighted in the official exam guide.  The bullets are not exhaustive; refer to the exam guide for full details.
+Below is a condensed summary of the tasks and knowledge statements for each domain. The bullets are not exhaustive; refer to the official AIF-C01 exam guide for full details.
 
-**Domain 1 – Design Secure Architectures** (30 %)【506934707838674†L96-L117】:
+**Domain 1 - Fundamentals of AI and ML** (20%):
 
-- *Secure access* – Understand identity‑and‑access management (IAM) concepts, federated access, AWS global infrastructure and the AWS shared‑responsibility model.  Be able to apply least‑privilege principles, design flexible authorization models with IAM users/groups/roles/policies, and plan cross‑account access strategies【506934707838674†L100-L116】.
-- *Secure workloads & applications* – Know how to secure application credentials, endpoints and network traffic; design VPC architectures with security components (security groups, route tables, network ACLs, NAT gateways); implement network segmentation; integrate services such as AWS Shield, WAF and Secrets Manager; and secure external connections (VPN, Direct Connect)【506934707838674†L117-L140】.
-- *Data security controls* – Understand data access governance, recovery, retention and encryption; map AWS technologies to compliance requirements; encrypt data at rest and in transit using KMS and Certificate Manager; manage encryption keys and certificates; implement backup, replication, lifecycle and key‑rotation policies【506934707838674†L141-L156】.
+- *AI/ML concepts* - Understand the difference between AI, ML, deep learning, and generative AI. Know supervised, unsupervised, and reinforcement learning. Identify common ML problem types: classification, regression, clustering, and recommendation.
+- *ML pipeline* - Know the stages of an ML lifecycle: data collection and preparation, feature engineering, model training, evaluation, and deployment. Understand bias/variance trade-offs and overfitting.
+- *AWS AI/ML services overview* - Be familiar with purpose-built AWS AI services: Amazon Rekognition (image/video analysis), Amazon Transcribe (speech to text), Amazon Comprehend (NLP/sentiment), Amazon Textract (document extraction), Amazon Polly (text to speech), Amazon Translate, and Amazon Forecast. Know Amazon SageMaker as the end-to-end ML platform for data scientists and developers.
 
-**Domain 2 – Design Resilient Architectures** (26 %)【506934707838674†L163-L190】:
+**Domain 2 - Fundamentals of Generative AI** (24%):
 
-- *Scalable, loosely coupled architectures* – Know API creation/management (API Gateway, REST), AWS managed services (SQS, Secrets Manager, Transfer Family), caching, microservices vs. monolithic design, event‑driven architectures, horizontal and vertical scaling, use of edge accelerators (CloudFront), containers and orchestration (ECS/EKS), serverless (Lambda, Fargate), storage options (object/file/block) and read‑replicas【506934707838674†L163-L190】.  You should be able to design event‑driven and multi‑tier architectures, select appropriate services to achieve loose coupling and decide when to use containers or serverless【506934707838674†L195-L206】.
-- *High availability & fault tolerance* – Understand AWS global infrastructure, load balancing, disaster‑recovery strategies (backup and restore, pilot light, warm standby, active‑active), distributed design patterns, failover strategies, immutable infrastructure, storage durability, quotas/throttling and workload visibility (e.g., X‑Ray)【506934707838674†L206-L247】.  You must be able to automate infrastructure deployment, select services for cross‑region or multi‑AZ high availability, identify metrics for availability, mitigate single points of failure, implement backups and choose appropriate DR strategies【506934707838674†L206-L247】.
+- *Foundation models and LLMs* - Understand what foundation models are, how they differ from traditional ML models, and their training on large unlabeled datasets. Know key terminology: tokens, context window, temperature, top-p, top-k, and inference parameters.
+- *Prompt engineering* - Know zero-shot, few-shot, and chain-of-thought prompting techniques. Understand how to craft effective prompts and the role of system prompts vs. user prompts.
+- *Generative AI use cases* - Identify appropriate use cases: text summarization, text generation, code generation, image generation, question answering, and conversational AI (chatbots). Understand when generative AI is or is not appropriate.
+- *AWS generative AI services* - Know Amazon Bedrock as the managed service for accessing foundation models (Anthropic Claude, Amazon Titan, Meta Llama, Mistral, Stability AI, etc.) via API without managing infrastructure. Know Amazon Q (for business and developer productivity).
 
-**Domain 3 – Design High‑Performing Architectures** (24 %)【506934707838674†L249-L333】:
+**Domain 3 - Applications of Foundation Models** (28%):
 
-- *Storage* – Know hybrid storage options, AWS storage services (S3, EFS, EBS), and storage types (object, file, block).  Be able to choose and configure storage for performance and scalability【506934707838674†L249-L262】.
-- *Compute* – Know AWS compute services (Batch, EMR, Fargate), distributed computing with global/edge infrastructure, messaging, auto‑scaling, serverless patterns and container orchestration.  Be able to decouple workloads, select appropriate compute types/features and tune resources for performance【506934707838674†L262-L285】.
-- *Databases* – Understand caching (ElastiCache), data access patterns, capacity planning, connections/proxies, replication and database engines/types (Aurora, DynamoDB, relational vs. non‑relational).  Be able to configure read replicas, design database architectures, choose database engines/types and integrate caching【506934707838674†L286-L299】【506934707838674†L309-L314】.
-- *Networking* – Know edge networking services (CloudFront, Global Accelerator), network design (subnets, routing, IP addressing), load balancing, VPN/Direct Connect/PrivateLink.  Be able to design scalable network topologies, place resources appropriately and select load‑balancing strategies【506934707838674†L315-L329】.
+- *Model selection criteria* - Choose the right model based on: task type, latency requirements, context window size, cost, modality (text/image/multimodal), and licensing.
+- *Customization techniques* - Understand prompt engineering (no training cost) vs. RAG (Retrieval-Augmented Generation, retrieves external knowledge at inference) vs. fine-tuning (retrains model weights on domain-specific data). Know the trade-offs: cost, complexity, and freshness of knowledge.
+- *Amazon Bedrock features* - Know Bedrock Knowledge Bases (managed RAG with S3/vector store), Bedrock Agents (multi-step task automation with tool use), Bedrock Guardrails (content filtering, topic denial, PII redaction), and Bedrock Model Evaluation.
+- *Inference and deployment* - Understand on-demand inference vs. provisioned throughput in Bedrock. Know how to call Bedrock APIs and interpret model responses. Know Amazon SageMaker JumpStart for deploying open-source foundation models.
 
-**Domain 4 – Design Cost‑Optimized Architectures** (20 %)【506934707838674†L362-L401】:
+**Domain 4 - Guidelines for Responsible AI** (14%):
 
-- *Cost‑optimized storage* – Understand access options (e.g., S3 Requester Pays), AWS cost‑management features (cost allocation tags, multi‑account billing), cost‑management tools (Cost Explorer, Budgets, Cost & Usage Report), storage services (FSx, EFS, S3, EBS), backup strategies, storage lifecycles and tiering.  You should be able to select cost‑effective storage services, determine storage size, choose low‑cost data‑transfer methods and manage object lifecycles【506934707838674†L362-L401】.
-- *Cost‑optimized compute* – Know cost‑management features/tools and purchasing options (Spot, Reserved Instances, Savings Plans).  Understand distributed compute strategies (edge processing), hybrid compute options (Outposts, Snowball Edge), instance types/families/sizes and compute utilization optimization (containers, serverless, microservices).  Be able to choose load‑balancing and scaling strategies, select cost‑effective compute services and size instances appropriately【506934707838674†L402-L433】.
-- *Cost‑optimized databases* – Understand cost‑management features/tools, caching strategies, retention policies, capacity planning, connections/proxies, database engines/types, replication and migration.  Be able to design backup/retention policies, select database engines/types and migrate schemas/data【506934707838674†L439-L458】.
-- *Cost‑optimized networking* – Know cost‑management features/tools, load balancing, NAT gateway cost considerations, network connectivity (private/dedicated lines, VPNs), network routing/topology/peering (Transit Gateway, VPC peering), network services (DNS) and CDN/edge caching.  Be able to select NAT gateways, configure cost‑effective connectivity and routing, plan CDNs/edge caching, optimize existing workloads and choose throttling strategies【506934707838674†L470-L493】.
+- *Bias and fairness* - Identify sources of bias (training data, labeling, sampling) and their impact. Know AWS tools for bias detection: Amazon SageMaker Clarify.
+- *Explainability and transparency* - Understand model explainability and why it matters for trust and compliance. Know SageMaker Clarify's feature importance and SHAP-based explanations.
+- *Human oversight and ethics* - Know when human review is required (Amazon Augmented AI / A2I). Understand responsible AI dimensions: fairness, reliability, privacy, inclusiveness, transparency, and accountability.
+- *Social impact* - Identify potential harms of AI outputs: misinformation, deepfakes, job displacement, and discriminatory decisions. Know Bedrock Guardrails as a mechanism to enforce responsible content policies at the application layer.
 
-## Free Study Resources and Instructional Materials
+**Domain 5 - Security, Compliance, and Governance for AI Solutions** (14%):
 
-Although AWS restricts direct access to some pages, there are still freely available resources to help you prepare:
+- *IAM and access control* - Apply least-privilege IAM policies to Amazon Bedrock, SageMaker, and other AI services. Know resource-based policies and VPC endpoints for private model access.
+- *Data privacy* - Understand data residency requirements, encryption at rest and in transit for training data and model artifacts (KMS), and PII handling with Bedrock Guardrails.
+- *Compliance and governance* - Know relevant regulatory frameworks (GDPR, HIPAA considerations) as they apply to AI workloads. Understand model versioning, audit logging (CloudTrail), and model cards for governance documentation.
+- *Shared responsibility for AI* - Apply the AWS shared responsibility model to AI services: AWS manages the underlying FM infrastructure; the customer is responsible for their data, prompts, application-layer guardrails, and output validation.
 
-- **Official Exam Guide** – The AWS Certified Solutions Architect Associate exam guide (PDF) outlines domains, task statements, example topics, scoring and exam policies【506934707838674†L92-L97】.  Reviewing this guide should be your first step in understanding the exam structure.
-- **AWS Digital Training** – The AWS Skill Builder platform offers hundreds of self‑paced digital courses and exam‑prep resources.  While some content requires a subscription, there are free courses covering fundamentals of networking, compute, storage and security.
-- **Free practice exams and question banks** – Many training providers publish free sample questions.  Look for “AWS Solutions Architect Associate free practice questions” to find sets of 30–50 questions to gauge your readiness.
-- **YouTube bootcamps** – Several instructors publish complete “AWS Solutions Architect Associate” bootcamps on YouTube.  These videos usually cover core services, architecture patterns and exam‑style questions at no cost.
-- **Blogs and cheat sheets** – Blog posts and cheat sheets summarizing AWS services and CLI commands can provide quick references.  For example, Blue Matador’s AWS CLI cheat sheet explains that the AWS CLI allows you to manage AWS resources across accounts and regions from the command line【233804253121922†L60-L68】 and highlights helpful commands such as using `aws help` to discover available sub‑commands【233804253121922†L82-L89】.
+## Free Study Resources
 
-## Proposed Study & Lesson Platform
+- **Official AIF-C01 Exam Guide** - The AWS Certified AI Practitioner exam guide (PDF) documents the five domains, task statements, in-scope AWS services, and exam policies. Start here.
+- **AWS Skill Builder** - Offers the "AWS Certified AI Practitioner" official learning plan and "Exam Prep Standard Course". Some content is free; the full practice exam requires a subscription.
+- **AWS Machine Learning University (MLU)** - Free publicly available courses on core ML concepts, NLP, computer vision, and tabular data at mlu-explain.github.io and on YouTube.
+- **Amazon Bedrock Workshop** - Free hands-on workshop (AWS Workshop Studio) covering Bedrock APIs, RAG with Knowledge Bases, Agents, and Guardrails. No charges when using workshop-provided credentials.
+- **YouTube** - Search "AWS AIF-C01 exam prep". Andrew Brown's (freeCodeCamp) full-length AIF-C01 course is freely available on YouTube.
+- **AWS Documentation** - Key pages: Amazon Bedrock User Guide, Amazon SageMaker Developer Guide, and the AWS AI Services product pages for Rekognition, Comprehend, Transcribe, Textract, and Polly.
 
-To help you prepare for the exam, a full‑stack study platform can be built using **React** and **Vite** on the front end and **Express** on the back end.  The platform would serve four main purposes:
+## Study and Flashcard Platform
 
-1. **Lessons** – Each lesson aligns with one of the four exam domains.  Lessons include learning objectives, explanatory text, diagrams and links to free resources (e.g., the official exam guide, blog posts, free practice questions).
-2. **Hands‑on projects** – At the end of each lesson, a hands‑on project gives you practical experience with AWS services.  Projects are described using step‑by‑step instructions and expected outcomes.
-3. **Quizzes** – Short quizzes assess your understanding of each lesson.  Questions are multiple‑choice or multiple‑response and include explanations after submission.
-4. **Cheat sheets** – A dedicated section provides quick reference material for AWS CLI commands, AWS service limits, and common development commands (npm, Vite, React).  The cheat sheet draws inspiration from resources like Blue Matador’s CLI guide【233804253121922†L60-L68】.
+This platform is built with **React + Vite** on the front end and **Node.js/Express** on the back end. It functions as an AI Practitioner flashcard study companion.
 
-### Architecture Overview
+### How the platform works
 
-The application is separated into a **back‑end** and a **front‑end**:
+1. **Flashcards** - Cards are auto-generated from content files placed in `server/src/data/aws-lessons/` (`.txt`, `.md`, `.json`, `.sh`, `.html` files are ingested; PDFs are skipped). Quiz anchor cards from `server/src/data/quizzes.json` are always included as "Exam Critical" cards.
+2. **Subjects** - Cards are tagged by subject: *Certification Essentials*, *Core Services*, and *Exam Critical*. The subject filter in the UI lets you focus on one area at a time.
+3. **Queues** - Cards flow through queues: *New Cards* -> *All Due* -> *Review Queue* (cards answered incorrectly) -> *Mastered* (sufficient correct-answer streaks).
+4. **Tutor** - A tutor panel sends your question and current card context to OpenAI to generate a concise, supportive explanation with a follow-up check question.
+5. **Progress** - Attempts, streaks, correct/incorrect counts, and answer history are persisted in `server/src/data/progress-memory.json`. Reset per-subject or globally via the Reset controls.
 
-- **Back‑end (Node.js/Express)** – Serves lesson metadata, quiz questions and project descriptions via a REST API (e.g., `/api/lessons`, `/api/lessons/:id`, `/api/quizzes/:lessonId`, `/api/projects/:lessonId`).  Data is stored in JSON files for simplicity.  You can extend the server later to use a database and authentication.
-- **Front‑end (React/Vite)** – Fetches data from the API and renders pages for lessons, quizzes, projects and cheat sheets.  Routing can be handled with React Router.  Components such as `LessonList`, `LessonDetail`, `Quiz` and `CheatSheet` encapsulate individual views.  The UI uses CSS modules or a simple design framework for styling.
+### Content folder naming convention
 
-### Proposed Lessons and Hands‑On Projects
+Place lesson content folders inside `server/src/data/aws-lessons/` using this naming pattern:
 
-The table below outlines suggested lessons and projects for each domain.  Projects are designed to be completed in your own AWS account using the free tier where possible.
+```
+aws-certified-ai-practitioner-{topic}/
+```
 
-| Domain/Lesson | Key topics | Hands‑on project |
+For example:
+```
+server/src/data/aws-lessons/
+  aws-certified-ai-practitioner-ai-ml-fundamentals/
+  aws-certified-ai-practitioner-generative-ai/
+  aws-certified-ai-practitioner-bedrock-applications/
+  aws-certified-ai-practitioner-responsible-ai/
+  aws-certified-ai-practitioner-security-governance/
+```
+
+Drop `.txt`, `.md`, or `.json` files inside each folder. The server auto-ingests on startup, or click **Refresh Material** to hot-reload without restarting.
+
+### Architecture
+
+- **Back-end** (`server/src/index.js`) - Express REST API on port 3000. Key endpoints: `GET /api/study/session`, `POST /api/study/answer`, `GET /api/progress`, `POST /api/progress/reset`, `POST /api/tutor`.
+- **Front-end** (`client/src/App.jsx`) - React/Vite SPA on port 5173. Mobile-first dark-mode-by-default UI with subject/queue filters, card navigation, stats panel, session summary, and tutor panel.
+
+### Running the platform
+
+```bash
+# Terminal 1 - Server
+cd server
+npm install
+# Ensure server/.env contains: OPENAI_API_KEY=... OPENAI_MODEL=gpt-4.1-mini PORT=3000
+npm run dev
+
+# Terminal 2 - Client
+cd client
+npm install
+npm run dev
+# Open http://localhost:5173
+```
+
+## AIF-C01 Key AWS Services Quick Reference
+
+| Service | Category | What to know for the exam |
 |---|---|---|
-| **Lesson 1 – Secure Architectures** | IAM roles and policies, root vs. IAM users, MFA, networking security (VPC, subnets, security groups, network ACLs), AWS shared responsibility, encryption at rest and in transit【506934707838674†L96-L156】. | **Secure S3 and IAM** – Create an S3 bucket with encryption enabled, configure a bucket policy that grants read access to a specific IAM role, enable MFA‑delete, and configure a CloudFront distribution.  Create IAM roles for an application and implement cross‑account access.  Demonstrate encrypting data with KMS. |
-| **Lesson 2 – Resilient Architectures** | Microservices vs. monolithic design, SQS/SNS, event‑driven architectures, edge caching (CloudFront), horizontal & vertical scaling, auto‑scaling, serverless (Lambda/Fargate), containers and orchestration (ECS/EKS), load balancing, DR strategies【506934707838674†L163-L247】. | **Serverless Message Processor** – Build a simple serverless application that uses Amazon API Gateway, AWS Lambda and SQS.  The API triggers a Lambda function that enqueues messages into SQS and another Lambda function that processes messages asynchronously.  Configure CloudWatch alarms and test high availability by deploying across multiple Availability Zones. |
-| **Lesson 3 – High‑Performing Architectures** | Performance‑oriented storage (S3 vs. EFS vs. EBS), compute options (EC2, Fargate, Lambda, Batch), auto‑scaling policies, caching (ElastiCache), high‑performance database options (Aurora, DynamoDB) and network topologies (subnets, routing, Global Accelerator)【506934707838674†L249-L333】. | **Auto‑scaling Web App** – Deploy a simple web application on EC2 behind an Application Load Balancer with an Auto‑Scaling Group.  Configure CloudWatch metrics to scale based on CPU utilization.  For the database, create an Aurora Serverless cluster or DynamoDB table.  Add an ElastiCache Redis cluster to cache read‑heavy queries. |
-| **Lesson 4 – Cost‑Optimized Architectures** | Cost allocation tags, cost‑management tools (Cost Explorer, Budgets), S3 storage classes (Standard, Infrequent Access, Glacier), Savings Plans/Reserved Instances/Spot Instances, cost‑effective database and network choices【506934707838674†L362-L401】. | **Cost‑Optimization Challenge** – Given a workload running on EC2 and storing data in S3, right‑size the instances, convert to a Savings Plan, enable S3 Intelligent‑Tiering and configure lifecycle rules to transition objects to Glacier.  Use AWS Cost Explorer to visualize the cost impact.  Compare NAT instance and NAT Gateway pricing, and implement the most cost‑effective solution. |
-
-Each lesson page in the application can include a mini‑lecture (written content), diagrams, external resource links and the hands‑on project description.  After completing the project, you can take the quiz to reinforce the concepts.  Quizzes can include multiple‑choice and multiple‑response questions.
+| **Amazon Bedrock** | Generative AI | Managed FM access (Claude, Titan, Llama, Mistral, Stable Diffusion). Knowledge Bases (RAG), Agents, Guardrails, Model Evaluation, on-demand vs. provisioned throughput. |
+| **Amazon SageMaker** | ML Platform | End-to-end ML: data labeling (Ground Truth), notebooks, training jobs, pipelines, model registry, endpoints, Feature Store, Clarify (bias/explainability), JumpStart (FM deployment). |
+| **Amazon Rekognition** | Vision AI | Object/scene detection, facial analysis, content moderation, video analysis. |
+| **Amazon Transcribe** | Speech AI | ASR, custom vocabulary, speaker diarization, real-time and batch transcription. |
+| **Amazon Comprehend** | NLP AI | Sentiment analysis, entity recognition, key phrase extraction, topic modeling, custom classifiers. |
+| **Amazon Textract** | Document AI | Extracts text, tables, and forms from scanned documents and PDFs beyond simple OCR. |
+| **Amazon Polly** | Speech synthesis | Text-to-speech with neural voices, SSML support, lexicons. |
+| **Amazon Translate** | Translation | Neural machine translation, custom terminology, real-time and batch. |
+| **Amazon Forecast** | Time-series AI | Managed forecasting using ML; auto-selects best algorithm (DeepAR+, ARIMA, etc.). |
+| **Amazon Personalize** | Recommendations | Real-time personalized recommendations; no ML expertise required. |
+| **Amazon Q** | Generative AI assistant | Amazon Q Business (enterprise chatbot over internal data), Amazon Q Developer (code assistance in IDEs and CLI). |
+| **AWS AI Service Cards** | Responsible AI | Published documentation of intended use, limitations, and responsible AI considerations for each AWS AI service. |
 
 ## Cheat Sheet Highlights
 
-The cheat sheet component of the platform should compile frequently used commands and concepts.  A few examples include:
+- **Prompt engineering** - Zero-shot (no examples), few-shot (2-5 examples in prompt), chain-of-thought (ask model to reason step by step). Use system prompts to set role/context; user prompts for the task. Lower temperature = more deterministic; higher = more creative.
+- **RAG vs. Fine-tuning** - RAG: no retraining, knowledge retrieved at query time from a vector store, FM weights frozen, good for frequently updated knowledge. Fine-tuning: retrains model weights, higher cost, better for style/format adaptation and specialized vocabulary.
+- **Bedrock Guardrails** - Configure: topic denial, content filters (hate/violence/sexual/insults severity), word filters (custom blocklists), PII redaction, and grounding checks (reduce hallucinations in RAG).
+- **SageMaker Clarify** - Bias detection on datasets (pre-training) and models (post-training). Feature importance via SHAP. Integrates with SageMaker Pipelines.
+- **AWS CLI for AI services** - `aws bedrock list-foundation-models`; `aws bedrock-runtime invoke-model`; `aws sagemaker list-endpoints`; `aws rekognition detect-labels`.
+- **Development commands** - `npm run dev` starts Vite (client) and nodemon (server). `npm run build` creates production bundle. Server reads `server/.env` for `OPENAI_API_KEY` and `OPENAI_MODEL`.
 
-- **Configuring the AWS CLI** – Use `aws configure --profile <profile-name>` to create named profiles and set output format and region【233804253121922†L97-L109】.  You can choose JSON, YAML or text output formats and specify a default region【233804253121922†L103-L110】.
-- **Getting help** – The AWS CLI includes a built‑in help system.  Typing `aws help` displays top‑level services, and `aws <service> help` shows commands for a specific service【233804253121922†L82-L89】.
-- **Resource listing** – Example commands include listing API Gateway REST APIs (`aws apigateway get-rest-apis`), listing CloudFront distributions (`aws cloudfront list-distributions`) and describing EC2 instances with instance IDs and tags using `aws ec2 describe-instances` in combination with `--query` or `jq`【233804253121922†L115-L163】【233804253121922†L257-L263】.
-- **Best practices** – Use command completion (Tab key) to speed up CLI usage and `jq` to parse JSON output【233804253121922†L75-L95】.  Always follow least‑privilege principles when creating IAM roles and policies and enable MFA on root accounts【506934707838674†L100-L116】.
-- **Development commands** – On the development side, remember key package‑management commands: `npm init -y` to initialize a project, `npm install <package>` to add dependencies, `npm run dev` to start Vite’s development server, and `npm run build` to create a production build.  Use React’s component model and hooks for state management (e.g., `useState`, `useEffect`).
+## Agent Specification (AGENTS.md)
 
-The full cheat sheets provided in the platform will present commands and frameworks in organized tables for quick reference.
-
-## Agent Specification (AGENTS.MD)
-
-The application can include an intelligent “study assistant” agent that answers questions and tracks your progress.  The agent should abide by rules similar to those used by large language models: follow user instructions, respect safety guidelines, maintain a memory of lesson completions and quiz scores, and log interactions for future reference.  A separate file, **AGENTS.MD**, included in this repository, documents the agent’s behavior, available skills, memory and logging strategies, and integration with local models such as Ollama.  Because the agent acts as a teaching assistant, it should respond with helpful explanations, suggest resources and encourage best practices when designing AWS architectures.
+The platform includes an AI-powered study assistant agent documented in `AGENTS.md`. The agent acts as a virtual tutor for AIF-C01 exam preparation: it answers questions about AI/ML concepts and AWS AI services, evaluates quiz answers with explanations, tracks flashcard progress, retrieves cheat-sheet entries, and allows the user to record personal notes. The agent integrates with OpenAI (via `/api/tutor`) and can optionally delegate to a local model such as Ollama. All interactions are logged server-side for debugging. The agent follows responsible AI guidelines: it does not provide real exam-dump answers, cites sources when making factual claims, and encourages understanding over memorization.

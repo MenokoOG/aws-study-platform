@@ -1,6 +1,6 @@
 # Agent Specification for the Study Platform
 
-This document defines the behaviour, capabilities and constraints of the **Study Assistant Agent** that powers the AWS Solutions Architect study platform. The agent acts as a virtual tutor, answering questions, providing explanations and guiding the learner through lessons, hands-on projects and quizzes. The agent can optionally connect to a local language model such as **Ollama** to generate responses.
+This document defines the behaviour, capabilities and constraints of the **Study Assistant Agent** that powers the AWS AIF-C01 AI Practitioner study platform. The agent acts as a virtual tutor, answering questions, providing explanations and guiding the learner through flashcards, quizzes, and hands-on projects. The agent can optionally connect to a local language model such as **Ollama** to generate responses.
 
 ## Role and Responsibilities
 

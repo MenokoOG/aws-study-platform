@@ -3,6 +3,7 @@ const cors = require("cors");
 const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
+const { PDFParse } = require("pdf-parse");
 require("dotenv").config({
   path: path.join(__dirname, "..", ".env"),
 });
@@ -544,7 +545,7 @@ function createFallbackCard(filePath) {
   );
 }
 
-function buildCardsFromAwsLessons() {
+async function buildCardsFromAwsLessons() {
   const files = fs.existsSync(AWS_LESSONS_DIR)
     ? collectFiles(AWS_LESSONS_DIR).filter(
       (filePath) => !filePath.endsWith(".DS_Store"),
@@ -556,8 +557,9 @@ function buildCardsFromAwsLessons() {
     return deckCache.cards;
   }
 
-  const binaryExtensions = new Set([".pdf", ".png", ".jpg", ".jpeg", ".zip"]);
+  const binaryExtensions = new Set([".png", ".jpg", ".jpeg", ".zip"]);
   const jsonExtensions = new Set([".json"]);
+  const pdfExtensions = new Set([".pdf"]);
   const textExtensions = new Set([
     ".txt",
     ".sh",
@@ -570,10 +572,10 @@ function buildCardsFromAwsLessons() {
 
   const cards = [];
 
-  files.forEach((filePath) => {
+  for (const filePath of files) {
     const extension = path.extname(filePath).toLowerCase();
     if (binaryExtensions.has(extension)) {
-      return;
+      continue;
     }
 
     const sourcePath = normalizePathForDisplay(filePath);
@@ -585,21 +587,31 @@ function buildCardsFromAwsLessons() {
     };
 
     try {
-      const rawContent = fs.readFileSync(filePath, "utf8");
-      const textBlob = rawContent.slice(0, 8000);
-      baseMeta.tags = inferTags(sourcePath, textBlob);
-
-      if (jsonExtensions.has(extension)) {
-        cards.push(...parseJsonCards(filePath, rawContent, baseMeta));
-      } else if (textExtensions.has(extension)) {
+      if (pdfExtensions.has(extension)) {
+        const pdfBuffer = fs.readFileSync(filePath);
+        const parser = new PDFParse({ data: pdfBuffer });
+        const pdfResult = await parser.getText();
+        const rawContent = pdfResult.text || "";
+        const textBlob = rawContent.slice(0, 8000);
+        baseMeta.tags = inferTags(sourcePath, textBlob);
         cards.push(...parseTextCards(filePath, rawContent, baseMeta));
       } else {
-        cards.push(createFallbackCard(filePath));
+        const rawContent = fs.readFileSync(filePath, "utf8");
+        const textBlob = rawContent.slice(0, 8000);
+        baseMeta.tags = inferTags(sourcePath, textBlob);
+
+        if (jsonExtensions.has(extension)) {
+          cards.push(...parseJsonCards(filePath, rawContent, baseMeta));
+        } else if (textExtensions.has(extension)) {
+          cards.push(...parseTextCards(filePath, rawContent, baseMeta));
+        } else {
+          cards.push(createFallbackCard(filePath));
+        }
       }
     } catch (error) {
       cards.push(createFallbackCard(filePath));
     }
-  });
+  }
 
   // Add high-priority exam cards from existing quiz content as anchor topics.
   quizzes.forEach((quiz) => {
@@ -889,7 +901,7 @@ async function askOpenAiTutor(payload) {
   }
 
   const systemPrompt = [
-    "You are an AWS Solutions Architect study tutor.",
+    "You are an AWS Certified AI Practitioner (AIF-C01) study tutor.",
     "Keep answers concise, calming, and supportive.",
     "Teach concepts, do not provide real exam dump answers.",
     "When possible, include quick practical memory tips.",
@@ -956,9 +968,9 @@ app.get("/api/lessons", (req, res) => {
  * GET /api/study/session
  * Returns the current study status and next card to review.
  */
-app.get("/api/study/session", (req, res) => {
+app.get("/api/study/session", async (req, res) => {
   const userId = getUserId(req);
-  const cards = buildCardsFromAwsLessons();
+  const cards = await buildCardsFromAwsLessons();
   const userState = getUserProgress(userId);
   const subjectId = req.query.subject || "all";
   const queueId = req.query.queue || "all-due";
@@ -991,9 +1003,9 @@ app.get("/api/study/session", (req, res) => {
  * POST /api/study/answer
  * Evaluates an answer for a study card and returns feedback with the next card.
  */
-app.post("/api/study/answer", (req, res) => {
+app.post("/api/study/answer", async (req, res) => {
   const userId = getUserId(req);
-  const cards = buildCardsFromAwsLessons();
+  const cards = await buildCardsFromAwsLessons();
   const userState = getUserProgress(userId);
   const { cardId, choiceIndex, subject, queue } = req.body;
 
@@ -1093,10 +1105,10 @@ app.post("/api/study/note", (req, res) => {
  * GET /api/progress
  * Returns progress summary aligned with agent memory docs.
  */
-app.get("/api/progress", (req, res) => {
+app.get("/api/progress", async (req, res) => {
   const userId = getUserId(req);
   const userState = getUserProgress(userId);
-  const cards = buildCardsFromAwsLessons();
+  const cards = await buildCardsFromAwsLessons();
   const subjectId = req.query.subject || "all";
   const subjectCards = filterCardsBySubject(cards, subjectId);
   const stats = buildStudyStats(subjectCards, userState);
@@ -1115,10 +1127,10 @@ app.get("/api/progress", (req, res) => {
  * POST /api/progress/reset
  * Resets study tracking for a specific subject (or all subjects).
  */
-app.post("/api/progress/reset", (req, res) => {
+app.post("/api/progress/reset", async (req, res) => {
   const userId = getUserId(req);
   const userState = getUserProgress(userId);
-  const cards = buildCardsFromAwsLessons();
+  const cards = await buildCardsFromAwsLessons();
   const subjectId = req.body.subject || "all";
 
   const subjectCards = filterCardsBySubject(cards, subjectId);
