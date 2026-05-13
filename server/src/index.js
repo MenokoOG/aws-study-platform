@@ -3,7 +3,7 @@ const cors = require("cors");
 const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
-const pdfParse = require("pdf-parse");
+const { PDFParse } = require("pdf-parse");
 require("dotenv").config({
   path: path.join(__dirname, "..", ".env"),
 });
@@ -31,9 +31,11 @@ let deckCache = {
 // Restrict CORS to localhost origins for local development
 const ALLOWED_ORIGINS = [
   "http://localhost:5173",
-  "http://localhost:3000",
+  "http://localhost:5174",
+  "http://localhost:3001",
   "http://127.0.0.1:5173",
-  "http://127.0.0.1:3000",
+  "http://127.0.0.1:5174",
+  "http://127.0.0.1:3001",
 ];
 app.use(
   cors({
@@ -562,6 +564,125 @@ function createFallbackCard(filePath) {
   );
 }
 
+function parsePdfCards(filePath, rawText, baseMeta) {
+  // These PDFs are exported Pluralsight slides and include "-- N of M --" page
+  // markers. Split on those markers and skip the preamble (author / title info
+  // that appears before the first marker).
+  // Each word must start with an uppercase letter or "(" (for acronyms like
+  // "(AI)"). This prevents verb-fragment lines like "AI can adapt to new"
+  // from being misidentified as titles. Single space between words rules out
+  // run-together text ("Random Forest   Support Vector") before normalization.
+  const titleRe = /^[A-Z][a-zA-Z'()-]*( [A-Z(][a-zA-Z'()-]*){1,5}$/;
+  const sentenceStartRe =
+    /^(The|A|An|It|Its|They|This|That|These|When|What|Which|How|www\.|https?:\/\/)\b/;
+
+  const rawSlides = rawText
+    .split(/--\s*\d+\s+of\s+\d+\s*--/)
+    .slice(1) // drop the preamble before the first marker
+    .map((s) => s.trim())
+    .filter(
+      (s) => s.length >= 25 && !/^https?:\/\/\S+$/.test(s.replace(/\s/g, "")),
+    );
+
+  const cards = [];
+
+  for (let i = 0; i < rawSlides.length && cards.length < 10; i++) {
+    const raw = rawSlides[i];
+    const lines = raw
+      .split(/\r?\n/)
+      .map((l) => l.replace(/\s+/g, " ").trim()) // collapse internal whitespace
+      .filter(Boolean);
+
+    if (lines.length === 0) continue;
+
+    const fullText = lines.join(" ");
+    const isQuestion = /\?/.test(fullText) && fullText.length > 80;
+
+    if (isQuestion) {
+      // Extract the question text (up to and including the first "?").
+      const qMatch = fullText.match(/^(.{20,}?\?)/s);
+      const questionText = qMatch
+        ? qMatch[1].trim()
+        : fullText.slice(0, 250).trim();
+
+      // Check whether the next slide contains standalone A/B/C/D labels,
+      // which indicates it is the answer-choices slide.
+      const nextRaw = rawSlides[i + 1] || "";
+      const nextLines = nextRaw
+        .split(/\r?\n/)
+        .map((l) => l.trim())
+        .filter(Boolean);
+      const hasChoiceLabels = nextLines.some((l) => /^[A-D]$/.test(l));
+
+      if (hasChoiceLabels) {
+        // In this PDF layout the choice texts come first, then A/B/C/D labels.
+        const labels = nextLines.filter((l) => /^[A-D]$/.test(l));
+        const choiceTexts = nextLines
+          .filter((l) => !/^[A-D]$/.test(l))
+          .slice(0, labels.length);
+        const answer = choiceTexts.length
+          ? choiceTexts.map((t, idx) => `${labels[idx]}) ${t}`).join("\n")
+          : nextLines.join(" ");
+        cards.push(
+          createCard(
+            baseMeta,
+            questionText,
+            answer,
+            `Exam question from ${baseMeta.sourcePath}`,
+            "concept",
+          ),
+        );
+        i++; // consume the choices slide so it is not processed again
+      }
+      // Slides with a "?" but no following A/B/C/D choices are section-header
+      // slides (e.g. "How Do Machines Learn?"). Skip them — no useful answer.
+    } else {
+      // Concept slide — titles often sit at the bottom of extracted slide text
+      // in this PDF layout, so search backwards from the last line.
+      const titleLine = [...lines].reverse().find(
+        (l) =>
+          l.length >= 3 &&
+          l.length <= 50 &&
+          titleRe.test(l) &&
+          !sentenceStartRe.test(l),
+      );
+      const concept = titleLine ||
+        // Only fall back to lines[0] if it looks like a clean concept label
+        // (starts with a capital letter, not a quote or number).
+        (lines[0] && /^[A-Z]/.test(lines[0]) && lines[0].length <= 60 ? lines[0] : null);
+      if (!concept || concept.length < 3) continue;
+      if (/^https?:\/\//.test(concept)) continue;
+
+      const bodyLines = lines.filter((l) => l !== concept);
+      const body = bodyLines.join(" ").trim();
+      if (!body || body.length < 20) continue;
+
+      // Humanize the topic: convert filename-style slug to readable title.
+      const humanTopic = baseMeta.topic
+        .replace(/-slides$/i, "")
+        .replace(/-/g, " ")
+        .replace(/\b\w/g, (c) => c.toUpperCase());
+      const prompt = `What is "${concept}" in the context of ${humanTopic}?`;
+      const answer = body.length > 450 ? body.slice(0, 450) + "…" : body;
+      cards.push(
+        createCard(
+          baseMeta,
+          prompt,
+          answer,
+          `PDF slide from ${baseMeta.sourcePath}`,
+          "concept",
+        ),
+      );
+    }
+  }
+
+  if (cards.length === 0) {
+    cards.push(createFallbackCard(filePath));
+  }
+
+  return cards.slice(0, 10);
+}
+
 async function buildCardsFromAwsLessons() {
   const files = fs.existsSync(AWS_LESSONS_DIR)
     ? collectFiles(AWS_LESSONS_DIR).filter(
@@ -605,12 +726,18 @@ async function buildCardsFromAwsLessons() {
 
     try {
       if (pdfExtensions.has(extension)) {
+        // Exam-review PDFs only mark the correct answer visually (highlighting);
+        // the correct choice is undetectable from plain text. Skip them here
+        // because quizzes.json already provides proper exam Q&A with answers.
+        if (path.basename(filePath).includes("exam-question-review")) {
+          continue;
+        }
         const pdfBuffer = fs.readFileSync(filePath);
-        const pdfResult = await pdfParse(pdfBuffer);
+        const pdfResult = await new PDFParse({ data: pdfBuffer }).getText();
         const rawContent = pdfResult.text || "";
         const textBlob = rawContent.slice(0, 8000);
         baseMeta.tags = inferTags(sourcePath, textBlob);
-        cards.push(...parseTextCards(filePath, rawContent, baseMeta));
+        cards.push(...parsePdfCards(filePath, rawContent, baseMeta));
       } else {
         const rawContent = fs.readFileSync(filePath, "utf8");
         const textBlob = rawContent.slice(0, 8000);
@@ -871,10 +998,27 @@ function getDueCards(cards, userState) {
 }
 
 function sanitizeCardForClient(card) {
+  // Shuffle choices on every serve so the correct answer never sits at a
+  // predictable position (the hash-based sort in buildCardsFromAwsLessons is
+  // deterministic and tends to place the correct answer last).
+  let choices = card.choices;
+  let correctIndex = card.correctIndex;
+  if (Array.isArray(choices) && choices.length > 1) {
+    // Fisher-Yates shuffle
+    const shuffled = [...choices];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    choices = shuffled;
+    correctIndex = shuffled.indexOf(card.expectedAnswer);
+  }
   return {
     id: card.id,
     prompt: card.prompt,
-    choices: card.choices,
+    expectedAnswer: card.expectedAnswer,
+    choices,
+    correctIndex,
     reference: card.reference,
     topic: card.topic,
     tags: card.tags,

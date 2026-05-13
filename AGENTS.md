@@ -57,67 +57,120 @@ For more details about skills, memory and logging, see the documents in the `age
 
 ## Handoff Notes (AWS Study Companion)
 
-### Current Project State
+### Current Project State (updated May 13 2026)
 
-- App has been upgraded from lesson pages to a mobile-first flashcard study companion.
-- Flashcards are auto-generated from `server/src/data/aws-lessons` (text/json/script-like files) plus anchor quiz cards from `server/src/data/quizzes.json`.
+- App is a mobile-first flashcard study companion for AWS AIF-C01.
+- Flashcards are auto-generated from `server/src/data/aws-lessons` PDF slides + anchor quiz cards from `server/src/data/quizzes.json`.
 - Tutor endpoint is integrated with OpenAI and reads key/model from `server/.env`.
 - Subject filters and queue filters are implemented.
 - Progress and history are persisted in `server/src/data/progress-memory.json`.
+- Server runs on **port 3001** (not 3000 — changed due to Docker conflict).
+- Client runs on **port 5173** with `strictPort: true`.
+
+### Known Bug — MUST FIX NEXT SESSION
+
+**Answer evaluation is broken.** Selecting any answer always evaluates incorrectly, and selecting the 4th choice (index 3) always evaluates as correct regardless of what it contains.
+
+**Root cause (already identified, not yet fixed):**
+
+`sanitizeCardForClient()` in `server/src/index.js` Fisher-Yates shuffles the choices on every serve and sends the shuffled order + new `correctIndex` to the client. But `POST /api/study/answer` evaluates correctness by comparing the client's submitted `choiceIndex` against `card.correctIndex` from the **cached (pre-shuffle) deck** — a completely different ordering.
+
+```js
+// BUG in POST /api/study/answer (~line 1185):
+const correct = choiceIndex === card.correctIndex;
+//              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+// card.correctIndex is the pre-shuffle cached index.
+// choiceIndex is based on the shuffled order the client saw.
+// These never match correctly.
+```
+
+**Fix:** Compare the selected choice *text* against `card.expectedAnswer` instead of comparing numeric indices:
+
+```js
+// CORRECT approach:
+const selectedText = card.choices[choiceIndex];
+const correct = selectedText === card.expectedAnswer;
+```
+
+`card.choices` in the cache is the pre-shuffle order. `choiceIndex` is the post-shuffle index from the client. So `card.choices[choiceIndex]` is still wrong. The client needs to either:
+- Send the selected text instead of the index, OR
+- The server needs to use the shuffled `choices` array it actually sent.
+
+**Recommended fix path:**
+1. In `sanitizeCardForClient`, add the shuffled choices to the returned object (already done — `choices` is the shuffled array).
+2. In `POST /api/study/answer`, look up the card's shuffled choices by doing `card.choices[choiceIndex]` — BUT `card` here is from the pre-shuffle cache. So the simplest fix is: **have the client send the selected answer text** (`card.choices[selectedChoice]`) instead of just the index. The server then checks `submittedAnswer === card.expectedAnswer`.
+
+Check `client/src/App.jsx` around line 166–170 where `submitAnswer` is called — it already computes `selectedAnswer = card.choices[selectedChoice]`. Just send that text field to the server and evaluate against `card.expectedAnswer`.
 
 ### What Is Working
 
 #### Backend (`server/src/index.js`)
 
-- `GET /api/study/session`
-  - Supports `subject` and `queue` query params.
-  - Returns: active filters, subject/queue summaries, stats, and next card.
-- `POST /api/study/answer`
-  - Evaluates answer, updates streak/attempts/history, returns feedback + next card.
-- `GET /api/progress`
-  - Returns stats + summary payload:
-    - `recentAnswers` (last 10)
-    - `trend` (right/wrong sequence)
-    - `topStrugglingSubject`
-- `POST /api/progress/reset`
-  - Resets tracking per subject or for all (`subject: "all"`).
-- `POST /api/tutor`
-  - Uses OpenAI Responses API with robust response parsing.
-- Existing MVP endpoints are still present (`/api/lessons`, `/api/quizzes/:lessonId`, etc.) for compatibility.
+- `GET /api/study/session` — returns active filters, subject/queue summaries, stats, next card (with shuffled choices).
+- `POST /api/study/answer` — evaluates answer (BROKEN — see bug above), updates streak/attempts/history, returns feedback + next card.
+- `GET /api/progress` — returns stats + `recentAnswers`, `trend`, `topStrugglingSubject`.
+- `POST /api/progress/reset` — resets per subject or all.
+- `POST /api/tutor` — OpenAI Responses API with robust response parsing.
+- `expectedAnswer` is now included in `sanitizeCardForClient` output (was missing — fixed this session).
+- Choices are Fisher-Yates shuffled on every serve (fixed this session — was always index 3 correct due to deterministic SHA-256 sort).
+
+#### PDF Card Generation (`parsePdfCards` in `server/src/index.js`)
+
+- Splits on `-- N of M --` slide markers (Pluralsight PDF format).
+- Exam-review PDFs (`exam-question-review-slides.pdf`) are **skipped** — correct answer is visual-only (highlighting) and undetectable from text.
+- Concept slides: extracts title + body, skips URL-only slides and short/noisy slides.
+- Question slides with A/B/C/D choices: paired with next slide to build Q+A card.
+- Section-header question slides (no A/B/C/D following) are skipped.
 
 #### Frontend (`client/src/App.jsx`)
 
-- Subject selector (`All Subjects`, `Certification Essentials`, `Core Services`, `Exam Critical`).
-- Queue selector (`All Due`, `Review Queue`, `New Cards`, `Mastered`).
-- Card navigation controls (`Back`, `Forward`).
-- Stats shown clearly:
-  - Mastered, Remaining, Review Queue, Progress
-  - Correct, Incorrect, Attempts, Accuracy
-- Session summary panel:
-  - Most missed subject
-  - Last 10 trend
-  - Last 10 answers (collapsible)
-- Reset controls:
-  - `Reset Subject`
-  - `Reset Everything`
+- Subject selector, queue selector, card navigation, stats panel, session summary, reset controls — all present.
+- `getUserId()` uses `crypto.randomUUID()` (fixed from `Math.random()` this session).
 
 ### Environment / Run
 
 #### Server
 
-1. `cd server`
-2. `npm install`
-3. Ensure `server/.env` contains:
+1. `cd server && npm install`
+2. Ensure `server/.env` contains:
    - `OPENAI_API_KEY=...`
    - `OPENAI_MODEL=gpt-4.1-mini`
-   - `PORT=3000`
-4. `npm run dev`
+   - `PORT=3001`
+3. `npm run dev`
 
 #### Client
 
-1. `cd client`
-2. `npm install`
-3. `npm run dev`
+1. `cd client && npm install`
+2. `npm run dev` → http://localhost:5173
+
+#### Port Conflicts
+
+- If port 3001 or 5173 is in use, check `docker ps` first — another project (`hadesrehabcompletestarter`) had containers on both ports.
+- `fuser` cannot kill Docker namespace processes; use `docker stop <container>`.
+
+### Deck Stats (current)
+
+- Total: 85 cards
+- AI/ML Fundamentals: 40
+- Generative AI Fundamentals: 30
+- Exam Critical (quiz-anchor): 15
+
+### Next Session Prompt
+
+> **Start here:** There is a confirmed bug in answer evaluation in `server/src/index.js`. In `POST /api/study/answer` (~line 1185), correctness is evaluated as `choiceIndex === card.correctIndex`. This is broken because `sanitizeCardForClient()` Fisher-Yates shuffles the choices on every serve, so the `correctIndex` in the cached card does not match the `choiceIndex` the client sends back (which is based on the shuffled order). The result: answers are almost always wrong, and selecting the 4th option always evaluates as correct.
+>
+> **Fix, test, and verify:**
+> 1. Change the server to evaluate by comparing answer text: the client already sends `choiceIndex` — look up `card.choices[choiceIndex]` from the **shuffled** choices. The cleanest fix is to have the client send `selectedAnswerText` (it already computes this as `selectedAnswer = card.choices[selectedChoice]` around line 166 of `App.jsx`) and have the server compare `submittedAnswerText === card.expectedAnswer`.
+> 2. After fixing, start server (`cd server && npm run dev`) and client (`cd client && npm run dev`), open http://localhost:5173, select each choice one by one on a card, and confirm only the correct one registers as right.
+> 3. Verify stats (correct/incorrect counts) increment correctly.
+
+### Known Follow-Up Opportunities
+
+- Add stronger scoring/retention model (spaced repetition intervals, not just streak).
+- Improve semantic distractors (domain-aware wrong options vs random pool).
+- Add per-subject reset audit message and optional export/import of progress memory.
+- Add lightweight charting for trend over time.
+- Add accessibility mode toggles.
 
 ### Data Rules / Generation Notes
 
